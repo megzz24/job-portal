@@ -1,0 +1,59 @@
+# Environment
+# ----------------------------------------------------------------
+# Ignore the virtual environment folder
+venv/
+# Ignore the file with secret environment variables
+.env
+
+
+# Django
+# ----------------------------------------------------------------
+# Ignore media files (user uploads)
+/media/
+# Ignore static files collected by collectstatic
+/staticfiles/
+# Ignore local database files (good practice)
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+
+
+# Python
+# ----------------------------------------------------------------
+# Ignore Python cache files and byte-compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+# Ignore egg info
+*.egg-info/
+.Python
+
+
+# IDEs and Editors
+# ----------------------------------------------------------------
+# VSCode
+.vscode/
+# JetBrains / PyCharm
+.idea/
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+
+# Testing
+# ----------------------------------------------------------------
+# Ignore testing artifacts like coverage reports
+.pytest_cache/
+.tox/
+htmlcov/
+.coverage
+.coverage.*
+
+
+# Operating System
+# ----------------------------------------------------------------
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
