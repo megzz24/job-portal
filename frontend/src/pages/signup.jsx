@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import wallpaper from "../assets/grafitti.jpg";
+import wallpaper from "../assets/corporate.avif";
 import "./signin.css"; // reuse the same CSS
 
 const SignUp = () => {

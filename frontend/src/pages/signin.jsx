@@ -1,6 +1,6 @@
 // src/components/SignIn.jsx
 import { Link } from "react-router-dom";
-import wallpaper from "../assets/grafitti.jpg";
+import wallpaper from "../assets/corporate.avif";
 import "./signin.css"; 
 
 const SignIn = () => {
