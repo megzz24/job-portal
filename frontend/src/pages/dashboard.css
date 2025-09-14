@@ -1,0 +1,121 @@
+
+/* General Layout */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.dashboard-content {
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+.dashboard-header {
+    margin-bottom: 32px;
+}
+
+.stats-grid {
+    margin-bottom: 32px;
+}
+
+.applications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+
+/* --- ResponsiveAppBar Styles --- */
+.responsive-app-bar {
+    /* These !important rules are needed to override MUI's default inline styles */
+    background-color: #fff !important;
+    color: #000 !important;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.search {
+    position: relative;
+    border-radius: 20px; /* approx theme.shape.borderRadius * 5 */
+    background-color: rgba(0, 0, 0, 0.05);
+    margin-right: 16px; /* theme.spacing(2) */
+    margin-left: 0;
+    width: 100%;
+}
+.search:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+/* Corresponds to MUI's 'sm' breakpoint */
+@media (min-width: 600px) {
+    .search {
+        margin-left: 24px; /* theme.spacing(3) */
+        width: auto;
+    }
+}
+
+.search-icon-wrapper {
+    padding: 0 16px; /* theme.spacing(0, 2) */
+    height: 100%;
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Targeting the input element within the InputBase component */
+.styled-input-base .MuiInputBase-input {
+    padding: 10px 10px 10px 0;
+    padding-left: calc(1em + 32px); /* calc(1em + theme.spacing(4)) */
+    width: 100%;
+}
+/* Corresponds to MUI's 'md' breakpoint */
+@media (min-width: 900px) {
+    .styled-input-base .MuiInputBase-input {
+        width: 35ch;
+    }
+}
+
+
+/* --- Stat Card Styles --- */
+.stat-card {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    box-shadow: none !important; /* Override MUI Paper shadow */
+}
+
+
+/* --- Status Badge Styles --- */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.status-badge-icon {
+    font-size: 1rem !important;
+    margin-right: 4px;
+}
+
+.status-badge.interview {
+    background-color: #E6F7F0;
+    color: #0D824B;
+}
+.status-badge.under-review {
+    background-color: #FFF8E6;
+    color: #B57E00;
+}
+.status-badge.rejected {
+    background-color: #FDEBEB;
+    color: #C42323;
+}
+
+/* --- Applications Table Styles --- */
+.applications-table-header {
+    background-color: #F9FAFB !important;
+}

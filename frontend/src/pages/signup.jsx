@@ -1,36 +1,36 @@
 import { Link } from "react-router-dom";
 import wallpaper from "../assets/corporate.avif";
-import "./signin.css"; // reuse the same CSS
+import "./LoginForm.css"; 
+import { FaRegUser } from "react-icons/fa";
+import { MdOutlineLock } from "react-icons/md";
+
 
 const SignUp = () => {
   return (
-    <div
-      className="signin-root"
-      style={{
-        backgroundImage: `url(${wallpaper})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        minHeight: "100vh",
-        width: "100vw",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-end", // move card-bg to the right
-      }}
-    >
-      <div className="card-bg">
-        <div className="signin-card">
-          <h2>Create Account</h2>
-          <form>
-            <input type="text" placeholder="Name" />
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <button type="submit">Sign Up</button>
-          </form>
+    <div className="wrapper">
+      <form action="">
+        <h1>Sign Up</h1>
+
+        <div className="input-box">
+          <input type="text" placeholder="Username" />
+          <FaRegUser className="icon" />
+        </div>
+
+        <div className="input-box">
+          <input type="password" placeholder="Password" />
+          <MdOutlineLock className="icon" />
+        </div>
+
+        {/* ✅ Button sits on its own row */}
+        <button type="submit">Register</button>
+
+        {/* ✅ Login link sits at bottom */}
+        <div className="register-link">
           <p>
             Already have an account? <Link to="/signin">Sign In</Link>
           </p>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
