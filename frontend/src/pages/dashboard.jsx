@@ -25,6 +25,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { alpha, styled } from '@mui/material/styles';
+import './dashboard.css';
 
 // --- Icons for Stats and Status ---
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
@@ -338,9 +339,10 @@ export default function Dashboard() {
   return (
     <ThemeProvider theme={modernTheme}>
       <CssBaseline />
-      <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default'}}>
+      <div className="dashboard-container">
         <ResponsiveAppBar />
-        <Container maxWidth="xl" sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
+        <div className="dashboard-content">
+          <Container maxWidth="xl" sx={{ mt: 4, mb: 4, flexGrow: 1 }}>
           <Box sx={{ mb: 4 }}>
             <Typography variant="h4" component="h1">Welcome, Sarah!</Typography>
             <Typography variant="body1" color="text.secondary">Here's an overview of your job search activity.</Typography>
@@ -399,7 +401,8 @@ export default function Dashboard() {
             </Paper>
           </Box>
         </Container>
-      </Box>
+        </div>
+      </div>
     </ThemeProvider>
   );
 }
