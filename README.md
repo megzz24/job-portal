@@ -57,9 +57,9 @@ Follow these instructions to get a copy of the project up and running on your lo
 4.  **Set up environment variables:**
     * Copy the example file: `cp .env.example .env`
     * Open the new `.env` file and fill in your local database credentials.
-    * To generate a new `SECRET_KEY`, run `python manage.py shell` and then enter:
+    * To generate a new `SECRET_KEY`, enter:
         ```python
-        from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())
+        python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
         ```
     * Copy the output into your `.env` file.
     * Make sure DEBUG=True for development.
