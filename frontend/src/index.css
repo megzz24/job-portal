@@ -1,17 +1,21 @@
-/* Reset & base styles */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 * {
-  margin: 0;
-  padding: 0;
+  margin:0;
+  padding:0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
 }
-
 body {
-  background-color: #020c1f; /* light gray */
-  color: #333;
-  display: flex;
-  align-content: left;
-  justify-content: left;
+  font-family : 'Poppins',sans-serif;
+  display : flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: rgb(135, 223, 234);
   
-}
 
+
+
+}

@@ -1,0 +1,180 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #f8f9fa;
+    width: 100vw;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+#root {
+    height: 100%;
+    min-height: 100vh;
+    width: 100vw;
+    background: #f8f9fa;
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: #f8f9fa;
+}
+
+.dashboard-content {
+    margin-top: 32px;
+    margin-bottom: 32px;
+    width: 100vw;
+    max-width: none;
+    padding: 0 2vw;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* --- Stat Card Styles --- */
+.stat-card {
+    padding: 24px 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+    min-width: 220px;
+    max-width: 350px;
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 16px !important;
+    background: #fff !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+    gap: 16px;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px) scale(1.03) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
+}
+
+/* --- Status Badge Styles (backup for inline styles) --- */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.status-badge-icon {
+    font-size: 1rem !important;
+    margin-right: 4px;
+}
+
+.status-badge.interview {
+    background-color: #E6F7F0;
+    color: #0D824B;
+}
+
+.status-badge.under-review {
+    background-color: #FFF8E6;
+    color: #B57E00;
+}
+
+.status-badge.rejected {
+    background-color: #FDEBEB;
+    color: #C42323;
+}
+
+/* --- Applications Table Styles --- */
+.applications-table-header-row {
+    background-color: #f9fafb !important;
+}
+
+.applications-table-row:hover {
+    background-color: #f3f4f6 !important;
+}
+
+/* --- Typography overrides for stat values and titles --- */
+.stat-value {
+    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+    color: #1F2937 !important;
+}
+
+.stat-title {
+    color: #6B7280 !important;
+    font-size: 0.875rem !important;
+}
+
+/* --- Responsive adjustments --- */
+@media (max-width: 900px) {
+    .dashboard-content {
+        padding: 0 24px;
+    }
+    
+    .stat-card {
+        min-width: 180px;
+        max-width: 100%;
+        padding: 16px 12px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-content {
+        padding: 0 16px;
+        margin-top: 24px;
+    }
+    
+    .stat-card {
+        min-width: 100%;
+        max-width: 100%;
+        padding: 12px 8px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px;
+    }
+    .stat-card .MuiAvatar-root {
+        margin-bottom: 8px;
+        margin-right: 0;
+    }
+}
+
+/* --- Search input responsiveness --- */
+@media (max-width: 900px) {
+    .MuiInputBase-input {
+        width: 25ch !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .MuiInputBase-input {
+        width: 20ch !important;
+    }
+}
+
+/* --- Grid system fixes --- */
+.MuiGrid-container {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.MuiGrid-item {
+    padding-left: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* --- Table responsive --- */
+@media (max-width: 600px) {
+    .MuiTableContainer-root {
+        overflow-x: auto;
+    }
+    
+    .MuiTable-root {
+        min-width: 650px;
+    }
+}
