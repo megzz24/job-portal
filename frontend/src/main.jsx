@@ -8,6 +8,7 @@ import App from "./App.jsx";
 import SignIn from "./pages/SignIn.jsx";   // ✅ Fixed case
 import Dashboard from "./pages/dashboard.jsx";
 import JobFinder from "./pages/JobFinder.jsx";
+import EmployerJobPosting from "./pages/EmployerJobPosting.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -18,6 +19,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/signin" element={<SignIn />} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/jobs" element={<JobFinder/>}/>
+        <Route path="/employer" element={<EmployerJobPosting />} />
+
       </Routes>
     </BrowserRouter>
   </StrictMode>
