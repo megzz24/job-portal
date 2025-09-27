@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './Jobposts.css';
+import Modal from '../../components/Modal';
+import JobPostForm from '../../components/JobPostForm';
 
 // --- Mock Data ---
 // In a real application, this data would come from an API.
@@ -82,7 +84,7 @@ const JobCard = ({ job, onSelect }) => (
 
 // --- Main Views ---
 
-const JobListings = ({ onJobSelect }) => (
+const JobListings = ({ onJobSelect, onNewJob }) => (
     <div className="job-listings-container">
         <SideNav />
         <div className="main-content-wrapper">
@@ -90,7 +92,7 @@ const JobListings = ({ onJobSelect }) => (
                 <header className="main-header">
                     <div className="header-placeholder-mobile"></div>
                     <h1 className="header-title">My Jobs</h1>
-                    <button className="new-job-btn">
+                    <button className="new-job-btn" onClick={onNewJob}>
                         <span className="material-symbols-outlined">add</span>
                         <span className="new-job-btn-text">New Job</span>
                     </button>
@@ -202,22 +204,23 @@ const ApplicantList = ({ job, onBack }) => {
 
 function Jobposts() {
     const [selectedJob, setSelectedJob] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleJobSelect = (job) => {
-        setSelectedJob(job);
-    };
-
-    const handleBack = () => {
-        setSelectedJob(null);
-    };
+    const handleJobSelect = (job) => setSelectedJob(job);
+    const handleBack = () => setSelectedJob(null);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     return (
         <div className="job-portal-app">
             {selectedJob ? (
                 <ApplicantList job={selectedJob} onBack={handleBack} />
             ) : (
-                <JobListings onJobSelect={handleJobSelect} />
+                <JobListings onJobSelect={handleJobSelect} onNewJob={openModal} />
             )}
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <JobPostForm />
+            </Modal>
         </div>
     );
 }
