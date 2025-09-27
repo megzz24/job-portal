@@ -41,7 +41,7 @@ const CompanyRepSignUp = () => {
       localStorage.setItem("refresh_token", response.data.refresh);
 
       // Redirect to dashboard or company home
-      navigate("/company/dashboard");
+      navigate("/companyrep/dashboard");
     } catch (err) {
       console.error(err);
       setError(

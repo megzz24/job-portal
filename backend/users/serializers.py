@@ -81,3 +81,16 @@ class CompanyRepRegistrationSerializer(serializers.ModelSerializer):
         company_rep = CompanyRepresentative.objects.create(user=user, company=company, **validated_data)
         return company_rep
     
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Add custom claims
+        token['user_type'] = user.user_type
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['user_type'] = self.user.user_type
+        return data

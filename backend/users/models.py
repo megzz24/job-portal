@@ -33,6 +33,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+    
+    @property
+    def user_type(self):
+        if hasattr(self, "jobseeker_profile"):
+            return "jobseeker"
+        elif hasattr(self, "companyrep_profile"):
+            return "company_rep"
+        return "unknown"
 
     def __str__(self):
         return self.email

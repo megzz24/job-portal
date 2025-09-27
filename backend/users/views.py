@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import JobSeekerRegistrationSerializer, CompanyRepRegistrationSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import CustomTokenObtainPairSerializer
 
 class JobSeekerRegisterView(generics.CreateAPIView):
     serializer_class = JobSeekerRegistrationSerializer
@@ -46,3 +47,5 @@ class CompanyRepRegisterView(generics.CreateAPIView):
             "refresh": str(refresh)
         }, status=status.HTTP_201_CREATED)
 
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
