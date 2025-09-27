@@ -335,7 +335,7 @@ const modernTheme = createTheme({
 });
 
 // Main Dashboard Component
-export default function Dashboard() {
+export default function JobSeekerDashboard() {
   const statsData = [
   { 
     title: 'Total Applications', 

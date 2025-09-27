@@ -1,42 +1,48 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import JobSeekerRegistrationSerializer, CompanyRepRegistrationSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import JobSeeker, CompanyRepresentative
-from .serializers import JobSeekerSerializer, CompanyRepresentativeSerializer
 
-# JobSeeker Registration
 class JobSeekerRegisterView(generics.CreateAPIView):
-    serializer_class = JobSeekerSerializer
-    permission_classes = [permissions.AllowAny]
+    serializer_class = JobSeekerRegistrationSerializer
 
-# JobSeeker Profile View (Retrieve & Update)
-class JobSeekerProfileView(generics.RetrieveUpdateAPIView):
-    serializer_class = JobSeekerSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        jobseeker = serializer.save()
 
-    def get_object(self):
-        return JobSeeker.objects.get(user=self.request.user)
+        # Generate JWT tokens
+        refresh = RefreshToken.for_user(jobseeker.user)
 
-# JobSeeker Logout
-class LogoutView(generics.GenericAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+        return Response({
+            "id": jobseeker.id,
+            "email": jobseeker.user.email,
+            "first_name": jobseeker.user.first_name,
+            "last_name": jobseeker.user.last_name,
+            "access": str(refresh.access_token),
+            "refresh": str(refresh)
+        }, status=status.HTTP_201_CREATED)
 
-    def post(self, request):
-        refresh_token = request.data.get("refresh")
-        token = RefreshToken(refresh_token)
-        token.blacklist()  # Blacklist the token
-        return Response({"detail": "Logout successful"})
-
-# Company Representative Registration
 class CompanyRepRegisterView(generics.CreateAPIView):
-    serializer_class = CompanyRepresentativeSerializer
-    permission_classes = [permissions.AllowAny]
+    serializer_class = CompanyRepRegistrationSerializer
 
-# Company Representative Profile View
-class CompanyRepProfileView(generics.RetrieveUpdateAPIView):
-    serializer_class = CompanyRepresentativeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        company_rep = serializer.save()
 
-    def get_object(self):
-        return CompanyRepresentative.objects.get(user=self.request.user)
+        # Generate JWT tokens
+        refresh = RefreshToken.for_user(company_rep.user)
+
+        return Response({
+            "id": company_rep.id,
+            "email": company_rep.user.email,
+            "first_name": company_rep.user.first_name,
+            "last_name": company_rep.user.last_name,
+            "company": company_rep.company.name,
+            "role": company_rep.role,  
+            "access": str(refresh.access_token),
+            "refresh": str(refresh)
+        }, status=status.HTTP_201_CREATED)
 

@@ -1,94 +1,83 @@
 from rest_framework import serializers
-from .models import User, JobSeeker, Company, CompanyRepresentative
-from django.contrib.auth.password_validation import validate_password
+from .models import User, JobSeeker, CompanyRepresentative, Company
+from jobs.models import Skill
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-# Serializer for User model
-class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
-
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'password']
-
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password']
-        )
-        return user
-
-# Serializer for JobSeeker model
-class JobSeekerSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+class JobSeekerRegistrationSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(write_only=True, min_length=6)
+    first_name = serializers.CharField(required=False, allow_blank=True)
+    last_name = serializers.CharField(required=False, allow_blank=True)
+    skills = serializers.PrimaryKeyRelatedField(
+        queryset=Skill.objects.all(), many=True, required=False
+    )
 
     class Meta:
         model = JobSeeker
-        fields = ['id', 'user', 'first_name', 'last_name', 'profile_picture', 'resume']
+        fields = ['email', 'password', 'first_name', 'last_name', 'profile_picture', 'resume', 'skills']
 
     def create(self, validated_data):
-        user_data = validated_data.pop('user')
+        skills_data = validated_data.pop('skills', [])
+        email = validated_data.pop('email')
+        password = validated_data.pop('password')
+        first_name = validated_data.pop('first_name', '')
+        last_name = validated_data.pop('last_name', '')
+
+        # Create User
         user = User.objects.create_user(
-            email=user_data['email'],
-            password=user_data['password']
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name
         )
+
+        # Create JobSeeker profile
         jobseeker = JobSeeker.objects.create(user=user, **validated_data)
+        jobseeker.skills.set(skills_data)  # Add skills if any
         return jobseeker
 
-    def update(self, instance, validated_data):
-        user_data = validated_data.pop('user', {})
-        if 'email' in user_data:
-            instance.user.email = user_data['email']
-            instance.user.save()
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.save()
-        return instance
-
-# Serializer for Company model
-class CompanySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Company
-        fields = '__all__'
-
-# Serializer for CompanyRepresentative model
-class CompanyRepresentativeSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    company = CompanySerializer()
+class CompanyRepRegistrationSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(write_only=True, min_length=6)
+    first_name = serializers.CharField(required=False, allow_blank=True)
+    last_name = serializers.CharField(required=False, allow_blank=True)
+    company_id = serializers.IntegerField(required=False, write_only=True)
+    company_name = serializers.CharField(required=False, write_only=True)
+    role = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = CompanyRepresentative
-        fields = ['id', 'user', 'first_name', 'last_name', 'company']
+        fields = ['email', 'password', 'first_name', 'last_name', 'profile_picture', 'role', 'company_id', 'company_name']
+
+    def validate(self, attrs):
+        # Either company_id or company_name must be provided
+        if not attrs.get('company_id') and not attrs.get('company_name'):
+            raise serializers.ValidationError("Provide either company_id or company_name")
+        return attrs
 
     def create(self, validated_data):
-        user_data = validated_data.pop('user')
-        company_data = validated_data.pop('company')
-        
-        company, created = Company.objects.get_or_create(name=company_data['name'], defaults=company_data)
-        
+        email = validated_data.pop('email')
+        password = validated_data.pop('password')
+        first_name = validated_data.pop('first_name', '')
+        last_name = validated_data.pop('last_name', '')
+        company_id = validated_data.pop('company_id', None)
+        company_name = validated_data.pop('company_name', None)
+
+        # Create User
         user = User.objects.create_user(
-            email=user_data['email'],
-            password=user_data['password']
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name
         )
-        
-        rep = CompanyRepresentative.objects.create(
-            user=user,
-            company=company,
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
-        )
-        
-        return rep
 
-    def update(self, instance, validated_data):
-        user_data = validated_data.pop('user', {})
-        company_data = validated_data.pop('company', {})
+        # Get or create Company
+        if company_id:
+            company = Company.objects.get(id=company_id)
+        else:
+            company, created = Company.objects.get_or_create(name=company_name)
 
-        if 'email' in user_data:
-            instance.user.email = user_data['email']
-            instance.user.save()
-
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.save()
-
-        return instance
+        # Create CompanyRepresentative profile
+        company_rep = CompanyRepresentative.objects.create(user=user, company=company, **validated_data)
+        return company_rep
+    

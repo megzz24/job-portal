@@ -1,17 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+// App.jsx
+import { Routes, Route } from "react-router-dom";
+import JobSeekerSignUp from "../src/pages/JobSeeker/SignUp";
+import CompanyRepSignUp from "../src/pages/CompanyRep/Signup";
+import SignIn from "./pages/signin";
+import JobSeekerDashboard from "./pages/JobSeeker/DashBoard";
+import JobFinder from "./pages/JobSeeker/JobFinder";
+import EmployerJobPosting from "./pages/CompanyRep/EmployerJobPosting";
+import Landing from "./pages/Landing";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/jobseeker/signup" element={<JobSeekerSignUp />} />
+      <Route path="/companyrep/signup" element={<CompanyRepSignUp />} />
+      <Route path="/signin" element={<SignIn />} />
       
-    </>
-  )
+      <Route path="/jobseeker/dashboard" element={<JobSeekerDashboard />} />
+      <Route path="/jobs" element={<JobFinder />} />
+      <Route path="/employer" element={<EmployerJobPosting />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;

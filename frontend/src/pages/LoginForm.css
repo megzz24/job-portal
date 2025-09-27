@@ -1,15 +1,19 @@
-body {
-    background:url('..\assets\cityscape.jpg') no-repeat;
+.wrapper-container {
+    width: 100vw;
+    height: 100vh;
     background-size: cover;
     background-position: center;
-    
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
 .wrapper {
     width: 420px;
-    background:transparent;
-    border: 2px solid rgba(255,255,255,.2);
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(20px);
-    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     color: #fff;
     padding: 30px 40px;
     border-radius: 10px;
@@ -34,7 +38,7 @@ body {
     width: 100%;
     height: 100%;
     background: transparent;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
     padding: 0 45px 0 16px;
     color: #fff;
@@ -54,7 +58,6 @@ body {
     pointer-events: none;
 }
 
-/* ✅ Fix alignment issue */
 .wrapper .remember-forgot {
     display: flex;
     justify-content: space-between;
@@ -74,7 +77,6 @@ body {
     accent-color: #fff;
 }
 
-/* ✅ Button sits on its own row */
 .wrapper button {
     width: 100%;
     height: 45px;
@@ -82,12 +84,12 @@ body {
     border: none;
     outline: none;
     border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     font-size: 16px;
     color: #333;
     font-weight: 600;
-    margin-top: 10px;  /* spacing below remember-forgot */
+    margin-top: 10px;
 }
 
 .remember-forgot a {
@@ -103,7 +105,7 @@ body {
 .wrapper .register-link {
     font-size: 14px;
     text-align: center;
-    margin-top: 20px ; 
+    margin-top: 20px;
 }
 
 .register-link p a {
