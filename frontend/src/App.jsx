@@ -8,6 +8,7 @@ import CompanyRepDashboard from "./pages/CompanyRep/DashBoard";
 import JobFinder from "./pages/JobSeeker/JobFinder";
 import EmployerJobPosting from "./pages/CompanyRep/EmployerJobPosting";
 import Landing from "./pages/Landing";
+import Jobposts from "./pages/CompanyRep/Jobposts";
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
       <Route path="/jobseeker/dashboard" element={<JobSeekerDashboard />} />
       <Route path="/jobs" element={<JobFinder />} />
       <Route path="/employer" element={<EmployerJobPosting />} />
+      
+      <Route path="/companyrep/jobposts" element={<Jobposts />} />
 
       <Route path="/companyrep/dashboard" element={<CompanyRepDashboard />} />
 
