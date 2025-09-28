@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // --- SVG Icons ---
 // Using inline SVGs to avoid extra dependencies or file requests.
@@ -64,6 +65,7 @@ const jobs = [
 
 // --- Main App Component ---
 export default function CareerConnect() {
+    const navigate = useNavigate();
     const [selectedJob, setSelectedJob] = useState(jobs[0]);
     const [isMobileDetailVisible, setIsMobileDetailVisible] = useState(false);
 
@@ -92,28 +94,28 @@ export default function CareerConnect() {
                     </div>
                     <nav>
                         <ul className="space-y-2">
-                            <li>
-                                <a href="#" className="flex items-center space-x-3 rounded-lg bg-blue-100 px-3 py-2 font-semibold text-blue-600">
-                                    <SearchIcon className="h-5 w-5" />
-                                    <span>Search</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
+                            <li onClick={() => navigate('/jobseeker/dashboard')}>
+                                <a className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 cursor-pointer">
                                     <HomeIcon className="h-5 w-5" />
                                     <span>Home</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
-                                    <SavedIcon className="h-5 w-5" />
-                                    <span>Saved</span>
+                                <a className="flex items-center space-x-3 rounded-lg bg-blue-100 px-3 py-2 font-semibold text-blue-600 cursor-pointer">
+                                    <SearchIcon className="h-5 w-5" />
+                                    <span>Jobs</span>
                                 </a>
                             </li>
-                             <li>
-                                <a href="#" className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">
+                            <li onClick={() => navigate('/jobseeker/profile')}>
+                                <a className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 cursor-pointer">
                                     <ProfileIcon className="h-5 w-5" />
                                     <span>Profile</span>
+                                </a>
+                            </li>
+                            <li onClick={() => navigate('/jobseeker/settings')}>
+                                <a className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 cursor-pointer">
+                                    <SavedIcon className="h-5 w-5" />
+                                    <span>Settings</span>
                                 </a>
                             </li>
                         </ul>
@@ -278,22 +280,22 @@ export default function CareerConnect() {
 
 
                 {/* --- Bottom Navigation (Mobile) --- */}
-                <nav className={`fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t bg-white p-2 shadow-[0_-1px_3px_rgba(0,0,0,0.1)] md:hidden transition-transform duration-300 ease-in-out ${isMobileDetailVisible ? 'translate-y-full' : 'translate-y-0'}`}>
-                    <a href="#" className="flex flex-col items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 w-1/4">
+                <nav className={`fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t bg-white/90 backdrop-blur-md p-2 shadow-[0_-1px_3px_rgba(0,0,0,0.1)] md:hidden transition-transform duration-300 ease-in-out ${isMobileDetailVisible ? 'translate-y-full' : 'translate-y-0'}`}>
+                    <a onClick={() => navigate('/jobseeker/dashboard')} className="flex flex-col items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 w-1/4 cursor-pointer">
                         <HomeIcon />
                         <span className="text-xs">Home</span>
                     </a>
-                    <a href="#" className="flex flex-col items-center justify-center rounded-lg bg-blue-100 p-2 text-blue-600 w-1/4">
+                    <a className="flex flex-col items-center justify-center rounded-lg bg-blue-100 p-2 text-blue-600 w-1/4 cursor-pointer">
                         <SearchIcon />
-                        <span className="text-xs font-semibold">Search</span>
+                        <span className="text-xs font-semibold">Jobs</span>
                     </a>
-                    <a href="#" className="flex flex-col items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 w-1/4">
+                    <a onClick={() => navigate('/jobseeker/profile')} className="flex flex-col items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 w-1/4 cursor-pointer">
                         <SavedIcon />
-                        <span className="text-xs">Saved</span>
-                    </a>
-                    <a href="#" className="flex flex-col items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 w-1/4">
-                        <ProfileIcon />
                         <span className="text-xs">Profile</span>
+                    </a>
+                    <a onClick={() => navigate('/jobseeker/settings')} className="flex flex-col items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 w-1/4 cursor-pointer">
+                        <ProfileIcon />
+                        <span className="text-xs">Settings</span>
                     </a>
                 </nav>
             </div>

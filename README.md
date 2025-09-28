@@ -1,6 +1,6 @@
-# Job Portal - React & Django
+# CareerConnect - React & Django
 
-This is a full-featured job portal application where job seekers can create profiles and find jobs, and companies can post job listings and manage applicants. Built with a React frontend (using Vite) and a Django REST Framework backend.
+This is a full-featured career connection platform where job seekers can create profiles and find jobs, and companies can post job listings and manage applicants. Built with a React frontend (using Vite) and a Django REST Framework backend.
 
 ## ✨ Features
 
