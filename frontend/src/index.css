@@ -1,21 +1,52 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-* {
-  margin:0;
-  padding:0;
-  box-sizing: border-box;
-}
-body {
-  font-family : 'Poppins',sans-serif;
-  display : flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: rgb(135, 223, 234);
+
+@layer base {
+  html {
+    font-family: 'Poppins', sans-serif;
+  }
   
+  body {
+    @apply bg-gray-50 text-secondary-800;
+  }
 
+  h1 {
+    @apply text-3xl font-bold text-secondary-900;
+  }
 
+  h2 {
+    @apply text-2xl font-semibold text-secondary-900;
+  }
 
+  h3 {
+    @apply text-xl font-semibold text-secondary-800;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700;
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary-100 text-secondary-900 hover:bg-secondary-200;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 rounded-lg border border-secondary-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-secondary-100 p-6;
+  }
+
+  .section-title {
+    @apply text-2xl font-semibold text-secondary-900 mb-6;
+  }
 }

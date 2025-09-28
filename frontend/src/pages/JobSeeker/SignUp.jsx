@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineLock } from "react-icons/md";
-import wallpaper from "../../assets/cityscape.jpg";
+import wallpaper from "../../assets/corporate.avif";
 import "../LoginForm.css";
 import apiClient from "../../apiClient.js";
 
