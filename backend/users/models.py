@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             return "jobseeker"
         elif hasattr(self, "companyrep_profile"):
             return "company_rep"
-        return "unknown"
+        return "admin"
 
     def __str__(self):
         return self.email

@@ -22,7 +22,7 @@ function App() {
       <Route path="/signin" element={<SignIn />} />
       
       <Route path="/jobseeker/dashboard" element={<JobSeekerDashboard />} />
-      <Route path="/jobseeker/jobfinder" element={<JobFinder />} />
+      <Route path="/jobseeker/jobs" element={<JobFinder />} />
       <Route path="/jobseeker/profile" element={<JobSeekerProfile />} />
       <Route path="/jobseeker/settings" element={<JobSeekerSettings />} />
       

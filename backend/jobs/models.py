@@ -27,6 +27,9 @@ class Job(models.Model):
     skills = models.ManyToManyField('Skill', blank=True, related_name='jobs')
     posted_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-posted_at']
 
     def __str__(self):
         return f"{self.title} at {self.company.name}"
@@ -35,9 +38,10 @@ class Job(models.Model):
 class Application(models.Model):
     STATUS_CHOICES = [
         ('applied', 'Applied'),
-        ('reviewed', 'Reviewed'),
-        ('accepted', 'Accepted'),
+        ('review', 'Review'),
         ('rejected', 'Rejected'),
+        ('accepted', 'Accepted'),
+        ('interview', 'Interview')
     ]
 
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applications')
@@ -46,6 +50,12 @@ class Application(models.Model):
     cover_letter = models.TextField(blank=True, null=True)
     applied_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-applied_at']
+        constraints = [
+            models.UniqueConstraint(fields=['job', 'jobseeker'], name='unique_application')
+        ]
 
     def __str__(self):
         return f"{self.jobseeker.user.first_name or ''} {self.jobseeker.user.last_name or ''} applied to {self.job.title}"

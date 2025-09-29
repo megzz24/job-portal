@@ -4,23 +4,28 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User, JobSeeker, Company, CompanyRepresentative
 
 # Custom User Admin
-@admin.register(User)
 class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_active', 'user_type')
-    list_filter = ('is_staff', 'is_active')
+    list_filter = ('is_staff', 'is_active', 'user_type')
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
+
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'created_at', 'updated_at')}),
+        ('Permissions', {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+        }),
+        ('Important dates', {'fields': ('last_login',)}),  # ✅ removed created_at & updated_at
     )
+
+    readonly_fields = ('created_at', 'updated_at')  # ✅ show them as read-only
+
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active')}
-        ),
+            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active', 'user_type'),
+        }),
     )
 
 # JobSeeker Admin
