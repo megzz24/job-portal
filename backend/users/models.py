@@ -1,6 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.utils import timezone
+
 
 # Custom User Manager
 class UserManager(BaseUserManager):
@@ -14,9 +19,10 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
         return self.create_user(email, password, **extra_fields)
+
 
 # Core User model
 class User(AbstractBaseUser, PermissionsMixin):
@@ -29,11 +35,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = UserManager()
-    
+
     @property
     def user_type(self):
         if hasattr(self, "jobseeker_profile"):
@@ -45,15 +51,35 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+
 # JobSeeker profile
 class JobSeeker(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='jobseeker_profile')
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
-    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
-    skills = models.ManyToManyField('jobs.Skill', blank=True, related_name='jobseekers')  # Link to skills
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="jobseeker_profile"
+    )
+    profile_picture = models.ImageField(
+        upload_to="profile_pics/", blank=True, null=True
+    )
+    resume = models.FileField(upload_to="resumes/", blank=True, null=True)
+    skills = models.ManyToManyField(
+        "jobs.Skill", blank=True, related_name="jobseekers"
+    )  # Link to skills
+
+    location = models.CharField(max_length=100, blank=True, null=True)
+    field_name = models.CharField(max_length=100, blank=True, null=True)
+    about = models.TextField(blank=True, null=True)
+
+    # Using JSONField to store multiple structured entries
+    experience = models.JSONField(
+        blank=True, null=True, default=list
+    )  # e.g., [{"company": "", "role": "", "years": ""}]
+    education = models.JSONField(
+        blank=True, null=True, default=list
+    )  # e.g., [{"degree": "", "institution": "", "year": ""}]
 
     def __str__(self):
         return f"{self.user.first_name or ''} {self.user.last_name or ''}".strip()
+
 
 # Company model
 class Company(models.Model):
@@ -68,11 +94,18 @@ class Company(models.Model):
     def __str__(self):
         return self.name
 
+
 # CompanyRepresentative profile
 class CompanyRepresentative(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='companyrep_profile')
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='representatives')
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="companyrep_profile"
+    )
+    profile_picture = models.ImageField(
+        upload_to="profile_pics/", blank=True, null=True
+    )
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, related_name="representatives"
+    )
     role = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):

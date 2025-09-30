@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Application, Job
+from .models import Application, Job, Skill
 
 class JobSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source="company.name", read_only=True)
@@ -15,3 +15,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = ["id", "job", "applied_at", "status"]
+
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ["id", "name"]

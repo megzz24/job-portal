@@ -23,8 +23,8 @@ const JobSeekerSideNav = ({ className = '' }) => {
                 </li>
                 <li>
                     <a 
-                        href="/jobseeker/jobfinder" 
-                        className={`nav-link ${currentPath === '/jobseeker/jobfinder' ? 'active' : ''}`}
+                        href="/jobseeker/jobs" 
+                        className={`nav-link ${currentPath === '/jobseeker/jobs' ? 'active' : ''}`}
                     >
                         <span className="material-symbols-outlined">search</span>
                         Find Jobs
