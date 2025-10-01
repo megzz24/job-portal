@@ -7,6 +7,7 @@
 
 body {
   min-height: max(884px, 100dvh);
+  overflow-x: hidden; /* prevent accidental horizontal overflow from job finder */
 }
 
 .material-symbols-outlined {
@@ -15,4 +16,10 @@ body {
     "wght" 400,
     "GRAD" 0,
     "opsz" 24;
+}
+
+/* container safety */
+.container {
+  box-sizing: border-box;
+  max-width: 100%;
 }

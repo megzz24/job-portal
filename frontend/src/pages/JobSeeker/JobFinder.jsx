@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import JobSeekerSideNav from '../../components/JobSeekerSideNav';
+import Modal from '../../components/Modal';
+import ApplyForm from '../../components/ApplyForm';
 
 // --- SVG Icons ---
 // Using inline SVGs to avoid extra dependencies or file requests.
@@ -68,6 +71,7 @@ export default function CareerConnect() {
     const navigate = useNavigate();
     const [selectedJob, setSelectedJob] = useState(jobs[0]);
     const [isMobileDetailVisible, setIsMobileDetailVisible] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const handleJobClick = (job) => {
         setSelectedJob(job);
@@ -80,225 +84,185 @@ export default function CareerConnect() {
         setIsMobileDetailVisible(false);
     }
 
+    const [isApplyOpen, setIsApplyOpen] = useState(false);
+
+    const openApply = () => setIsApplyOpen(true);
+    const closeApply = () => setIsApplyOpen(false);
+
+    const onApplySuccess = (data) => {
+        // For now just console and maybe show a toast later
+        console.log('Application submitted', data);
+    };
+
     return (
         <div className="bg-slate-50 font-sans text-gray-800 antialiased">
-            <div className="container mx-auto flex min-h-screen flex-col md:flex-row md:gap-8 md:p-4">
-                
-                {/* --- Left Sidebar (Desktop) --- */}
-                <aside className="hidden md:flex md:w-1/4 lg:w-1/5 flex-col space-y-6 py-6 pr-4">
-                    <div className="flex items-center space-x-2 text-2xl font-bold text-blue-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M6 3.5A1.5 1.5 0 017.5 2h5A1.5 1.5 0 0114 3.5v1.148a1.5 1.5 0 01-.826 1.353l-2.5 1.25a1.5 1.5 0 01-1.348 0l-2.5-1.25A1.5 1.5 0 016 4.648V3.5zM4 9a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0 0116 9v5.5a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 014 14.5V9z" clipRule="evenodd" />
-                        </svg>
-                        <span>CareerConnect</span>
-                    </div>
-                    <nav>
-                        <ul className="space-y-2">
-                            <li onClick={() => navigate('/jobseeker/dashboard')}>
-                                <a className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 cursor-pointer">
-                                    <HomeIcon className="h-5 w-5" />
-                                    <span>Home</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a className="flex items-center space-x-3 rounded-lg bg-blue-100 px-3 py-2 font-semibold text-blue-600 cursor-pointer">
-                                    <SearchIcon className="h-5 w-5" />
-                                    <span>Jobs</span>
-                                </a>
-                            </li>
-                            <li onClick={() => navigate('/jobseeker/profile')}>
-                                <a className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 cursor-pointer">
-                                    <ProfileIcon className="h-5 w-5" />
-                                    <span>Profile</span>
-                                </a>
-                            </li>
-                            <li onClick={() => navigate('/jobseeker/settings')}>
-                                <a className="flex items-center space-x-3 rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 cursor-pointer">
-                                    <SavedIcon className="h-5 w-5" />
-                                    <span>Settings</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </aside>
+            {/* Mobile menu toggle + shared side nav (keeps layout consistent with other JobSeeker pages) */}
+            <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+                <span className="material-symbols-outlined">{menuOpen ? 'close' : 'menu'}</span>
+            </button>
+            <JobSeekerSideNav className={menuOpen ? 'open' : ''} />
 
-                <main className={`w-full md:w-3/4 lg:w-2/5 transition-transform duration-300 ease-in-out ${isMobileDetailVisible ? '-translate-x-full' : 'translate-x-0'} md:translate-x-0`}>
-                    {/* --- Mobile Header --- */}
-                    <header className="flex md:hidden items-center justify-start space-x-4 p-4">
-                        <button className="text-gray-600">
-                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
-                        </button>
-                        <h1 className="text-xl font-bold">Job Listings</h1>
-                    </header>
+            <div className="main-content-wrapper">
+                <div className="container mx-auto flex min-h-screen flex-col md:flex-row md:gap-8 md:p-4">
+                    <main className={`w-full md:w-3/4 lg:w-2/5 transition-transform duration-300 ease-in-out ${isMobileDetailVisible ? '-translate-x-full' : 'translate-x-0'}`}>
+                        {/* Header for small screens */}
+                        <header className="flex md:hidden items-center justify-start space-x-4 p-4">
+                            <button onClick={() => setMenuOpen(true)} className="text-gray-600">
+                                <span className="material-symbols-outlined">menu</span>
+                            </button>
+                            <h1 className="text-xl font-bold">Job Listings</h1>
+                        </header>
 
-                    <div className="p-4 md:py-6">
-                         <h1 className="text-2xl font-bold mb-4 hidden md:block">Job Listings</h1>
-                        {/* Search Bar */}
-                        <div className="relative mb-4">
-                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                               <SearchIcon className="h-5 w-5 text-gray-400" />
+                        <div className="p-4 md:py-6">
+                            <h1 className="text-2xl font-bold mb-4 hidden md:block">Job Listings</h1>
+                            {/* Search Bar */}
+                            <div className="relative mb-4">
+                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                                    <SearchIcon className="h-5 w-5 text-gray-400" />
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Search for jobs"
+                                    className="w-full rounded-xl border-none bg-blue-50/50 py-3 pl-12 pr-4 text-gray-700 focus:ring-2 focus:ring-blue-500"
+                                />
                             </div>
-                            <input
-                                type="text"
-                                placeholder="Search for jobs"
-                                className="w-full rounded-xl border-none bg-blue-50/50 py-3 pl-12 pr-4 text-gray-700 focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
 
-                        {/* Filters */}
-                        <div className="flex flex-wrap gap-2 mb-4">
-                           <button className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm text-gray-700 shadow-sm">
-                               <span>Location</span> <ChevronDownIcon />
-                           </button>
-                            <button className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm text-gray-700 shadow-sm">
-                               <span>Salary</span> <ChevronDownIcon />
-                           </button>
-                           <button className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm text-gray-700 shadow-sm">
-                               <span>Remote</span> <ChevronDownIcon />
-                           </button>
-                           <button className="hidden md:flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm text-gray-700 shadow-sm">
-                               <span>Job Type</span> <ChevronDownIcon />
-                           </button>
-                        </div>
-                        
-                        {/* Job List */}
-                        <div className="space-y-3">
-                            {jobs.map(job => (
-                                <div
-                                    key={job.id}
-                                    onClick={() => handleJobClick(job)}
-                                    className={`flex cursor-pointer items-start gap-4 rounded-xl border p-4 transition-all duration-200 ${selectedJob?.id === job.id ? 'border-blue-500 bg-white shadow-md' : 'border-transparent bg-white hover:shadow-md'}`}
-                                >
-                                    <img src={job.logo} alt={`${job.company} logo`} className="h-12 w-12 flex-shrink-0 rounded-lg object-cover mt-1" />
-                                    <div className="flex-grow">
-                                        <h3 className="font-bold text-gray-900">{job.title}</h3>
-                                        <p className="text-sm text-gray-600">{job.company}</p>
-                                        <p className="mt-1 text-xs text-gray-400">Posted {job.time}</p>
+                            {/* Filters */}
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                <button className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm text-gray-700 shadow-sm">
+                                    <span>Location</span> <ChevronDownIcon />
+                                </button>
+                                <button className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm text-gray-700 shadow-sm">
+                                    <span>Salary</span> <ChevronDownIcon />
+                                </button>
+                                <button className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm text-gray-700 shadow-sm">
+                                    <span>Remote</span> <ChevronDownIcon />
+                                </button>
+                                <button className="hidden md:flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm text-gray-700 shadow-sm">
+                                    <span>Job Type</span> <ChevronDownIcon />
+                                </button>
+                            </div>
+
+                            {/* Job List */}
+                            <div className="space-y-3">
+                                {jobs.map(job => (
+                                    <div
+                                        key={job.id}
+                                        onClick={() => handleJobClick(job)}
+                                        className={`flex cursor-pointer items-start gap-4 rounded-xl border p-4 transition-all duration-200 ${selectedJob?.id === job.id ? 'border-blue-500 bg-white shadow-md' : 'border-transparent bg-white hover:shadow-md'}`}
+                                    >
+                                        <img src={job.logo} alt={`${job.company} logo`} className="h-12 w-12 flex-shrink-0 rounded-lg object-cover mt-1" />
+                                        <div className="flex-grow">
+                                            <h3 className="font-bold text-gray-900">{job.title}</h3>
+                                            <p className="text-sm text-gray-600">{job.company}</p>
+                                            <p className="mt-1 text-xs text-gray-400">Posted {job.time}</p>
+                                        </div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-300 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                        </svg>
                                     </div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-300 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                                    </svg>
+                                ))}
+                            </div>
+                        </div>
+                    </main>
+
+                    {/* --- Right Details Pane (Desktop) --- */}
+                    <aside className="hidden lg:block lg:w-2/5 py-6 pl-4">
+                        {selectedJob && (
+                            <div className="sticky top-6 rounded-2xl bg-white p-6 shadow-sm">
+                                <div className="flex flex-col items-center text-center">
+                                    <img src={selectedJob.logo} alt={`${selectedJob.company} logo`} className="h-20 w-20 rounded-xl object-cover" />
+                                    <h2 className="mt-4 text-2xl font-bold">{selectedJob.title}</h2>
+                                    <p className="text-md text-gray-500">{selectedJob.company}</p>
                                 </div>
-                            ))}
+                                <div className="my-6 flex justify-center gap-3">
+                                    <button onClick={openApply} className="flex-1 rounded-xl bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 transition-colors">Apply Now</button>
+                                    <button className="rounded-xl border border-gray-300 p-3 text-gray-500 hover:bg-gray-100 transition-colors">
+                                        <SavedIcon className="h-6 w-6" />
+                                    </button>
+                                </div>
+                                <div className="space-y-6 text-sm">
+                                    <div className="flex items-start gap-3">
+                                        <LocationPinIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
+                                        <div>
+                                            <h4 className="font-semibold text-gray-700">Location</h4>
+                                            <p className="text-gray-500">{selectedJob.location}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <SalaryIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
+                                        <div>
+                                            <h4 className="font-semibold text-gray-700">Salary</h4>
+                                            <p className="text-gray-500">{selectedJob.salary}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <BriefcaseIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
+                                        <div>
+                                            <h4 className="font-semibold text-gray-700">Job Description</h4>
+                                            <p className="text-gray-500 leading-relaxed">{selectedJob.description}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </aside>
+                </div>
+            </div>
+
+            {/* Mobile Job Detail View (Overlay) - keep as-is for small screens */}
+            <div className={`fixed inset-0 bg-slate-50 z-10 transform transition-transform duration-300 ease-in-out md:hidden ${isMobileDetailVisible ? 'translate-x-0' : 'translate-x-full'}`}>
+                <header className="flex items-center justify-start space-x-4 p-4 border-b">
+                    <button onClick={handleBackClick} className="text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </button>
+                    <h1 className="text-xl font-bold">Job Details</h1>
+                </header>
+                {selectedJob && (
+                    <div className="p-4">
+                        <div className="flex flex-col items-center text-center">
+                            <img src={selectedJob.logo} alt={`${selectedJob.company} logo`} className="h-20 w-20 rounded-xl object-cover" />
+                            <h2 className="mt-4 text-2xl font-bold">{selectedJob.title}</h2>
+                            <p className="text-md text-gray-500">{selectedJob.company}</p>
+                        </div>
+                        <div className="my-6 flex justify-center gap-3">
+                            <button className="flex-1 rounded-xl bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 transition-colors">Apply Now</button>
+                            <button className="rounded-xl border border-gray-300 p-3 text-gray-500 hover:bg-gray-100 transition-colors">
+                                <SavedIcon className="h-6 w-6" />
+                            </button>
+                        </div>
+                        <div className="space-y-6 text-sm">
+                            <div className="flex items-start gap-3">
+                                <LocationPinIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
+                                <div>
+                                    <h4 className="font-semibold text-gray-700">Location</h4>
+                                    <p className="text-gray-500">{selectedJob.location}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <SalaryIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
+                                <div>
+                                    <h4 className="font-semibold text-gray-700">Salary</h4>
+                                    <p className="text-gray-500">{selectedJob.salary}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <BriefcaseIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
+                                <div>
+                                    <h4 className="font-semibold text-gray-700">Job Description</h4>
+                                    <p className="text-gray-500 leading-relaxed">{selectedJob.description}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </main>
-
-                {/* --- Right Details Pane (Desktop) --- */}
-                <aside className="hidden lg:block lg:w-2/5 py-6 pl-4">
-                    {selectedJob && (
-                        <div className="sticky top-6 rounded-2xl bg-white p-6 shadow-sm">
-                           <div className="flex flex-col items-center text-center">
-                               <img src={selectedJob.logo} alt={`${selectedJob.company} logo`} className="h-20 w-20 rounded-xl object-cover" />
-                               <h2 className="mt-4 text-2xl font-bold">{selectedJob.title}</h2>
-                               <p className="text-md text-gray-500">{selectedJob.company}</p>
-                           </div>
-                           <div className="my-6 flex justify-center gap-3">
-                                <button className="flex-1 rounded-xl bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 transition-colors">Apply Now</button>
-                                <button className="rounded-xl border border-gray-300 p-3 text-gray-500 hover:bg-gray-100 transition-colors">
-                                    <SavedIcon className="h-6 w-6"/>
-                                </button>
-                           </div>
-                           <div className="space-y-6 text-sm">
-                                <div className="flex items-start gap-3">
-                                    <LocationPinIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-semibold text-gray-700">Location</h4>
-                                        <p className="text-gray-500">{selectedJob.location}</p>
-                                    </div>
-                                </div>
-                                 <div className="flex items-start gap-3">
-                                    <SalaryIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-semibold text-gray-700">Salary</h4>
-                                        <p className="text-gray-500">{selectedJob.salary}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <BriefcaseIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-semibold text-gray-700">Job Description</h4>
-                                        <p className="text-gray-500 leading-relaxed">{selectedJob.description}</p>
-                                    </div>
-                                </div>
-                           </div>
-                        </div>
-                    )}
-                </aside>
-
-                {/* --- Mobile Job Detail View (Overlay) --- */}
-                <div className={`fixed inset-0 bg-slate-50 z-10 transform transition-transform duration-300 ease-in-out md:hidden ${isMobileDetailVisible ? 'translate-x-0' : 'translate-x-full'}`}>
-                    <header className="flex items-center justify-start space-x-4 p-4 border-b">
-                        <button onClick={handleBackClick} className="text-gray-600">
-                           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
-                        </button>
-                        <h1 className="text-xl font-bold">Job Details</h1>
-                    </header>
-                    {selectedJob && (
-                         <div className="p-4">
-                           <div className="flex flex-col items-center text-center">
-                               <img src={selectedJob.logo} alt={`${selectedJob.company} logo`} className="h-20 w-20 rounded-xl object-cover" />
-                               <h2 className="mt-4 text-2xl font-bold">{selectedJob.title}</h2>
-                               <p className="text-md text-gray-500">{selectedJob.company}</p>
-                           </div>
-                           <div className="my-6 flex justify-center gap-3">
-                                <button className="flex-1 rounded-xl bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 transition-colors">Apply Now</button>
-                                <button className="rounded-xl border border-gray-300 p-3 text-gray-500 hover:bg-gray-100 transition-colors">
-                                    <SavedIcon className="h-6 w-6"/>
-                                </button>
-                           </div>
-                           <div className="space-y-6 text-sm">
-                                <div className="flex items-start gap-3">
-                                    <LocationPinIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-semibold text-gray-700">Location</h4>
-                                        <p className="text-gray-500">{selectedJob.location}</p>
-                                    </div>
-                                </div>
-                                 <div className="flex items-start gap-3">
-                                    <SalaryIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-semibold text-gray-700">Salary</h4>
-                                        <p className="text-gray-500">{selectedJob.salary}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <BriefcaseIcon className="h-5 w-5 flex-shrink-0 text-gray-400 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-semibold text-gray-700">Job Description</h4>
-                                        <p className="text-gray-500 leading-relaxed">{selectedJob.description}</p>
-                                    </div>
-                                </div>
-                           </div>
-                        </div>
-                    )}
-                </div>
-
-
-                {/* --- Bottom Navigation (Mobile) --- */}
-                <nav className={`fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t bg-white/90 backdrop-blur-md p-2 shadow-[0_-1px_3px_rgba(0,0,0,0.1)] md:hidden transition-transform duration-300 ease-in-out ${isMobileDetailVisible ? 'translate-y-full' : 'translate-y-0'}`}>
-                    <a onClick={() => navigate('/jobseeker/dashboard')} className="flex flex-col items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 w-1/4 cursor-pointer">
-                        <HomeIcon />
-                        <span className="text-xs">Home</span>
-                    </a>
-                    <a className="flex flex-col items-center justify-center rounded-lg bg-blue-100 p-2 text-blue-600 w-1/4 cursor-pointer">
-                        <SearchIcon />
-                        <span className="text-xs font-semibold">Jobs</span>
-                    </a>
-                    <a onClick={() => navigate('/jobseeker/profile')} className="flex flex-col items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 w-1/4 cursor-pointer">
-                        <SavedIcon />
-                        <span className="text-xs">Profile</span>
-                    </a>
-                    <a onClick={() => navigate('/jobseeker/settings')} className="flex flex-col items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 w-1/4 cursor-pointer">
-                        <ProfileIcon />
-                        <span className="text-xs">Settings</span>
-                    </a>
-                </nav>
+                )}
             </div>
+            {/* Apply Modal */}
+            <Modal isOpen={isApplyOpen} onClose={closeApply}>
+                <ApplyForm jobId={selectedJob?.id} onClose={closeApply} onSuccess={onApplySuccess} />
+            </Modal>
         </div>
     );
 }

@@ -7,6 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
+import { Link as RouterLink } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -232,10 +233,10 @@ export default function CompanyRepDashboard() {
           </Grid>
           
           <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h5" component="h2">Your Applications</Typography>
-                <Link href="#" underline="hover" sx={{ fontWeight: 500 }}>View all applications</Link>
-            </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5" component="h2">Your Applications</Typography>
+                <Link component={RouterLink} to="/companyrep/applications" underline="hover" sx={{ fontWeight: 500 }}>View all applications</Link>
+      </Box>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
               <TableContainer>
                 <Table sx={{ minWidth: 650 }} aria-label="applications table">
