@@ -97,9 +97,14 @@ body {
 .main-content-wrapper {
     flex: 1;
     width: 100%;
-    margin-left: 280px; /* Same as side-nav width */
+    margin-left: var(--sidenav-width); /* Same as side-nav width */
     background-color: #F8F9FA;
     min-height: 100vh;
+}
+
+/* When sidenav is collapsed */
+body.sidenav-collapsed .main-content-wrapper {
+    margin-left: 72px;
 }
 
 .main-content {

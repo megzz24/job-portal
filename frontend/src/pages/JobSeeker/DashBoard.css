@@ -3,7 +3,7 @@ html, body {
     margin: 0;
     padding: 0;
     background: #f8f9fa;
-    width: 100vw;
+    width: 100%;
     min-width: 0;
     box-sizing: border-box;
 }
@@ -11,13 +11,14 @@ html, body {
 #root {
     height: 100%;
     min-height: 100vh;
-    width: 100vw;
+    width: 100%;
     background: #f8f9fa;
 }
 
 .dashboard-container {
     width: 100%;
     min-height: 100vh;
+    overflow-x: hidden; /* prevent horizontal overflow from pushing page out */
 }
 
 .dashboard-content {
@@ -26,6 +27,13 @@ html, body {
     box-sizing: border-box;
     margin-left: var(--sidenav-width);
     padding: 2rem;
+    max-width: calc(100% - var(--sidenav-width));
+}
+
+/* When the sidenav is collapsed, reduce the left margin so content lines up */
+body.sidenav-collapsed .dashboard-content {
+    margin-left: 72px;
+    max-width: calc(100% - 72px);
 }
 
 /* --- Stat Card Styles --- */
@@ -166,6 +174,6 @@ html, body {
     }
     
     .MuiTable-root {
-        min-width: 650px;
+        min-width: 0;
     }
 }

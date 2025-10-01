@@ -33,6 +33,33 @@
     gap: 0.75rem;
 }
 
+.logo-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-actions {
+    margin-left: auto;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, var(--primary) 0%, #38bdf8 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* short logo style when collapsed */
+body.sidenav-collapsed .logo-text {
+    font-size: 1.1rem;
+}
+
 .logo-text {
     font-size: 1.5rem;
     font-weight: 700;
@@ -58,6 +85,57 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+}
+
+/* Collapsed sidenav state - applied to body.sidenav-collapsed */
+body.sidenav-collapsed .side-nav {
+    width: 72px;
+    padding: 1rem 0.5rem;
+}
+
+body.sidenav-collapsed .main-content-wrapper {
+    margin-left: 72px;
+}
+
+.nav-label {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    opacity: 1;
+}
+
+body.sidenav-collapsed .nav-label {
+    opacity: 0;
+    transform: translateX(-6px);
+    pointer-events: none;
+}
+
+.nav-footer {
+    margin-top: auto; /* push to bottom */
+    display: flex;
+    align-items: center;
+}
+
+.nav-logout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-dark-60);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.nav-logout:hover {
+    background-color: var(--background-light);
+    color: var(--text-dark);
+}
+
+.nav-logout .material-symbols-outlined {
+    font-size: 1.2rem;
 }
 
 .nav-link {

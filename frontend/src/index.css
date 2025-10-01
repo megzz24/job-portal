@@ -12,6 +12,11 @@
     @apply bg-gray-50 text-secondary-800;
   }
 
+  /* Normalize box-sizing to prevent overflow surprises */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
   h1 {
     @apply text-3xl font-bold text-secondary-900;
   }
@@ -48,5 +53,19 @@
 
   .section-title {
     @apply text-2xl font-semibold text-secondary-900 mb-6;
+  }
+
+  /* Utility: make images responsive to avoid overflow */
+  .img-responsive {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Prevent horizontal overflow from elements using 100vw */
+  .no-viewport-width {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 }

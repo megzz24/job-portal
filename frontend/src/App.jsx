@@ -8,6 +8,8 @@ import CompanyRepDashboard from "./pages/CompanyRep/Dashboard";
 import JobFinder from "./pages/JobSeeker/JobFinder";
 import Landing from "./pages/Landing";
 import Jobposts from "./pages/CompanyRep/Jobposts";
+import Applications from "./pages/CompanyRep/Applications";
+import JobSeekerApplications from "./pages/JobSeeker/Applications";
 import JobSeekerProfile from "./pages/JobSeeker/Profile";
 import JobSeekerSettings from "./pages/JobSeeker/Settings";
 import CompanyRepProfile from "./pages/CompanyRep/Profile";
@@ -22,11 +24,15 @@ function App() {
       <Route path="/signin" element={<SignIn />} />
       
       <Route path="/jobseeker/dashboard" element={<JobSeekerDashboard />} />
-      <Route path="/jobseeker/jobs" element={<JobFinder />} />
+
+      <Route path="/jobseeker/jobfinder" element={<JobFinder />} />
+  <Route path="/jobseeker/applications" element={<JobSeekerApplications />} />
+
       <Route path="/jobseeker/profile" element={<JobSeekerProfile />} />
       <Route path="/jobseeker/settings" element={<JobSeekerSettings />} />
       
       <Route path="/companyrep/jobposts" element={<Jobposts />} />
+  <Route path="/companyrep/applications" element={<Applications />} />
       <Route path="/companyrep/dashboard" element={<CompanyRepDashboard />} />
       <Route path="/companyrep/profile" element={<CompanyRepProfile />} />
       <Route path="/companyrep/settings" element={<CompanyRepSettings />} />

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import apiClient from "../../apiClient"; // 👈 import your apiClient
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,6 +17,8 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import JobSeekerSideNav from "../../components/JobSeekerSideNav";
 import "./DashBoard.css";
+import { useNavigate } from "react-router-dom";
+
 
 // Icons
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
@@ -227,18 +231,10 @@ export default function JobSeekerDashboard() {
 
           {/* Applications */}
           <Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                mb: 2,
-                mt: 5,
-              }}
-            >
-              <Typography variant="h5">Your Applications</Typography>
-              <Link href="#" underline="hover" sx={{ fontWeight: 500 }}>
-                View all applications
-              </Link>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h5" component="h2">Your Applications</Typography>
+                <Link component={RouterLink} to="/jobseeker/applications" underline="hover" sx={{ fontWeight: 500 }}>View all applications</Link>
+
             </Box>
             <Paper sx={{ width: "80%", overflow: "hidden" }}>
               <TableContainer>
