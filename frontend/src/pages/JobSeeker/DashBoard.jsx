@@ -1,61 +1,49 @@
-import React, { useState } from 'react';
-import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
-import { Link as RouterLink } from 'react-router-dom';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import JobSeekerSideNav from '../../components/JobSeekerSideNav';
-import './DashBoard.css';
-import { useNavigate } from 'react-router-dom';
-
-// Icons for Stats and Status
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import HourglassTopIcon from '@mui/icons-material/HourglassTop';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import CancelIcon from '@mui/icons-material/Cancel';
+import React, { useState, useEffect } from "react";
+import apiClient from "../../apiClient"; // 👈 import your apiClient
+import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Link from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import JobSeekerSideNav from "../../components/JobSeekerSideNav";
+import "./DashBoard.css";
+import { useNavigate } from "react-router-dom";
 
 
+// Icons
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import CancelIcon from "@mui/icons-material/Cancel";
 
-// Status Badge Component
+// Status Badge
 const StatusBadge = ({ status }) => {
   const getStatusConfig = () => {
-    const statusKey = status.toLowerCase().replace(' ', '-');
+    const statusKey = status.toLowerCase().replace(" ", "-");
     switch (statusKey) {
-      case 'interview':
-        return {
-          bg: '#E6F7F0',
-          color: '#0D824B',
-          icon: CheckCircleIcon
-        };
-      case 'under-review':
-        return {
-          bg: '#FFF8E6',
-          color: '#B57E00',
-          icon: HourglassTopIcon
-        };
-      case 'rejected':
-        return {
-          bg: '#FDEBEB',
-          color: '#C42323',
-          icon: CancelIcon
-        };
+      case "interview":
+        return { bg: "#E6F7F0", color: "#0D824B", icon: CheckCircleIcon };
+      case "review":
+      case "under-review":
+        return { bg: "#FFF8E6", color: "#B57E00", icon: HourglassTopIcon };
+      case "accepted":
+      case "offer":
+        return { bg: "#E0E7FF", color: "#6366F1", icon: EmojiEventsIcon };
+      case "rejected":
+        return { bg: "#FDEBEB", color: "#C42323", icon: CancelIcon };
       default:
-        return {
-          bg: '#F3F4F6',
-          color: '#6B7280',
-          icon: HourglassTopIcon
-        };
+        return { bg: "#F3F4F6", color: "#6B7280", icon: HourglassTopIcon };
     }
   };
 
@@ -63,17 +51,19 @@ const StatusBadge = ({ status }) => {
   const IconComponent = config.icon;
 
   return (
-    <Box sx={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      padding: '4px 12px',
-      borderRadius: '16px',
-      fontWeight: 500,
-      fontSize: '0.8rem',
-      backgroundColor: config.bg,
-      color: config.color,
-    }}>
-      <IconComponent sx={{ fontSize: '1rem', marginRight: '4px' }} />
+    <Box
+      sx={{
+        display: "inline-flex",
+        alignItems: "center",
+        padding: "4px 12px",
+        borderRadius: "16px",
+        fontWeight: 500,
+        fontSize: "0.8rem",
+        backgroundColor: config.bg,
+        color: config.color,
+      }}
+    >
+      <IconComponent sx={{ fontSize: "1rem", marginRight: "4px" }} />
       {status}
     </Box>
   );
@@ -82,109 +72,115 @@ const StatusBadge = ({ status }) => {
 // Theme
 const modernTheme = createTheme({
   palette: {
-    mode: 'light',
-    primary: {
-      main: '#2563EB',
-    },
-    background: {
-      default: '#F8F9FA',
-      paper: '#FFFFFF',
-    },
-    text: {
-        primary: '#1F2937',
-        secondary: '#6B7280'
-    },
-    divider: '#E5E7EB',
+    mode: "light",
+    primary: { main: "#2563EB" },
+    background: { default: "#F8F9FA", paper: "#FFFFFF" },
+    text: { primary: "#1F2937", secondary: "#6B7280" },
+    divider: "#E5E7EB",
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    h4: { fontWeight: 700, color: '#111827' },
-    h5: { fontWeight: 600, color: '#111827' },
+    h4: { fontWeight: 700, color: "#111827" },
+    h5: { fontWeight: 600, color: "#111827" },
   },
-  components: {
-    MuiPaper: {
-        styleOverrides: {
-            root: { 
-                borderRadius: 12, 
-                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)',
-                transition: 'box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out',
-                '&:hover': {
-                    boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
-                }
-            }
-        }
-    },
-    MuiButton: {
-        styleOverrides: {
-            root: {
-                borderRadius: 8,
-            }
-        }
-    }
-  }
 });
 
-// Main Dashboard Component
+// Main Dashboard
 export default function JobSeekerDashboard() {
-  const statsData = [
-  { 
-    title: 'Total Applications', 
-    value: '12', 
-    iconComponent: BusinessCenterIcon,
-    iconColor: 'primary',
-    iconBg: '#DBEAFE' 
-  },
-  { 
-    title: 'Under Review', 
-    value: '5', 
-    iconComponent: HourglassTopIcon,
-    iconColor: '#F59E0B',
-    iconBg: '#FEF3C7' 
-  },
-  { 
-    title: 'Interviews', 
-    value: '3', 
-    iconComponent: CheckCircleIcon,
-    iconColor: '#10B981',
-    iconBg: '#D1FAE5' 
-  },
-  { 
-    title: 'Offers', 
-    value: '1', 
-    iconComponent: EmojiEventsIcon,
-    iconColor: '#6366F1',
-    iconBg: '#E0E7FF' 
-  }
-];
-  
-  const applicationsData = [
-    { title: 'Software Engineer', company: 'Tech Innovators Inc.', date: '2024-07-15', status: 'Interview' },
-    { title: 'Data Analyst', company: 'Global Solutions Ltd.', date: '2024-07-20', status: 'Under Review' },
-    { title: 'UX Designer', company: 'Creative Minds Corp.', date: '2024-07-25', status: 'Rejected' },
-  ];
-
+  const [summary, setSummary] = useState(null);
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [summaryRes, applicationsRes] = await Promise.all([
+          apiClient.get("/jobs/summary/"),
+          apiClient.get("/jobs/applications/"),
+        ]);
+        setSummary(summaryRes.data);
+        setApplications(applicationsRes.data);
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return <Typography sx={{ p: 4 }}>Loading...</Typography>;
+  }
+
+  const statsData = [
+    {
+      title: "Total Applications",
+      value: summary?.total_applications || 0,
+      iconComponent: BusinessCenterIcon,
+      iconColor: "primary",
+      iconBg: "#DBEAFE",
+    },
+    {
+      title: "Under Review",
+      value: summary?.under_review || 0,
+      iconComponent: HourglassTopIcon,
+      iconColor: "#F59E0B",
+      iconBg: "#FEF3C7",
+    },
+    {
+      title: "Interviews",
+      value: summary?.interviews || 0,
+      iconComponent: CheckCircleIcon,
+      iconColor: "#10B981",
+      iconBg: "#D1FAE5",
+    },
+    {
+      title: "Offers",
+      value: summary?.offers || 0,
+      iconComponent: EmojiEventsIcon,
+      iconColor: "#6366F1",
+      iconBg: "#E0E7FF",
+    },
+    {
+    title: "Rejected",
+    value: summary?.reject || 0, // Add this field in your backend summary too
+    iconComponent: CancelIcon,
+    iconColor: "#C42323",
+    iconBg: "#FDEBEB",
+  },
+  ];
 
   return (
     <ThemeProvider theme={modernTheme}>
       <CssBaseline />
       <div className="dashboard-container">
+        {/* Side Nav */}
         <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
           <span className="material-symbols-outlined">
-            {menuOpen ? 'close' : 'menu'}
+            {menuOpen ? "close" : "menu"}
           </span>
         </button>
-        <JobSeekerSideNav className={menuOpen ? 'open' : ''} />
+        <JobSeekerSideNav className={menuOpen ? "open" : ""} />
+
         <div className="dashboard-content">
+          {/* Welcome */}
           <Box sx={{ mb: 4 }}>
-            <Typography variant="h4" component="h1">Welcome, Sarah!</Typography>
-            <Typography variant="body1" color="text.secondary">Here's an overview of your job search activity.</Typography>
+            <Typography variant="h4" component="h1">
+              Welcome
+              {summary?.jobseeker_name ? `, ${summary.jobseeker_name}` : ""}!
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Here's an overview of your job search activity.
+            </Typography>
           </Box>
 
+          {/* Stats */}
           <Grid
             container
             spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }}
-            sx={{ mb: 4, justifyContent: { xs: 'center', md: 'flex-start' } }}
+            sx={{ mb: 4 }}
           >
             {statsData.map((stat, index) => {
               const IconComponent = stat.iconComponent;
@@ -195,11 +191,7 @@ export default function JobSeekerDashboard() {
                   sm={6}
                   md={3}
                   key={index}
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'stretch', // Ensures all cards in a row have the same height
-                  }}
+                  sx={{ display: "flex", justifyContent: "center" }}
                 >
                   <Paper variant="outlined" className="stat-card">
                     <Avatar
@@ -213,60 +205,73 @@ export default function JobSeekerDashboard() {
                     >
                       <IconComponent
                         sx={{
-                          color: stat.iconColor === 'primary' ? 'primary.main' : stat.iconColor,
+                          color:
+                            stat.iconColor === "primary"
+                              ? "primary.main"
+                              : stat.iconColor,
                           fontSize: 32,
                         }}
                       />
                     </Avatar>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                      <Typography variant="h5" component="p" className="stat-value">
-                        {stat.value}
-                      </Typography>
-                      <Typography variant="body2" className="stat-title">
-                        {stat.title}
-                      </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <Typography variant="h5">{stat.value}</Typography>
+                      <Typography variant="body2">{stat.title}</Typography>
                     </Box>
                   </Paper>
                 </Grid>
               );
             })}
           </Grid>
-          
+
+          {/* Applications */}
           <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h5" component="h2">Your Applications</Typography>
                 <Link component={RouterLink} to="/jobseeker/applications" underline="hover" sx={{ fontWeight: 500 }}>View all applications</Link>
+
             </Box>
-            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+            <Paper sx={{ width: "80%", overflow: "hidden" }}>
               <TableContainer>
-                <Table sx={{ minWidth: 650 }} aria-label="applications table">
+                <Table sx={{ minWidth: 650 }}>
                   <TableHead>
-                    <TableRow className="applications-table-header-row">
-                      <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>JOB TITLE</TableCell>
-                      <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>COMPANY</TableCell>
-                      <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>DATE APPLIED</TableCell>
-                      <TableCell sx={{ fontWeight: 600, color: 'text.secondary' }}>STATUS</TableCell>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 600 }}>JOB TITLE</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>COMPANY</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>
+                        DATE APPLIED
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>STATUS</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {applicationsData.map((row, index) => (
-                      <TableRow 
-                        key={`${row.title}-${index}`} 
-                        className="applications-table-row"
-                        sx={{ 
-                            '&:last-child td, &:last-child th': { border: 0 }
-                        }}
-                      >
-                        <TableCell component="th" scope="row" sx={{ fontWeight: 500 }}>
-                          {row.title}
-                        </TableCell>
-                        <TableCell>{row.company}</TableCell>
-                        <TableCell>{row.date}</TableCell>
-                        <TableCell>
-                          <StatusBadge status={row.status} />
+                    {applications.length > 0 ? (
+                      applications.map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell sx={{ fontWeight: 500 }}>
+                            {row.job.title}
+                          </TableCell>
+                          <TableCell>{row.job.company_name}</TableCell>
+                          <TableCell>
+                            {new Date(row.applied_at).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <StatusBadge status={row.status} />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={4} align="center">
+                          Nos applications found
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
