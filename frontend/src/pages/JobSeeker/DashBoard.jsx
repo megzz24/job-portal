@@ -19,7 +19,6 @@ import JobSeekerSideNav from "../../components/JobSeekerSideNav";
 import "./DashBoard.css";
 import { useNavigate } from "react-router-dom";
 
-
 // Icons
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import HourglassTopIcon from "@mui/icons-material/HourglassTop";
@@ -91,6 +90,8 @@ export default function JobSeekerDashboard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const goToApplications = () => navigate("/jobseeker/applications");
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -144,12 +145,12 @@ export default function JobSeekerDashboard() {
       iconBg: "#E0E7FF",
     },
     {
-    title: "Rejected",
-    value: summary?.reject || 0, // Add this field in your backend summary too
-    iconComponent: CancelIcon,
-    iconColor: "#C42323",
-    iconBg: "#FDEBEB",
-  },
+      title: "Rejected",
+      value: summary?.reject || 0, // Add this field in your backend summary too
+      iconComponent: CancelIcon,
+      iconColor: "#C42323",
+      iconBg: "#FDEBEB",
+    },
   ];
 
   return (
@@ -230,13 +231,29 @@ export default function JobSeekerDashboard() {
           </Grid>
 
           {/* Applications */}
-          <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h5" component="h2">Your Applications</Typography>
-                <Link component={RouterLink} to="/jobseeker/applications" underline="hover" sx={{ fontWeight: 500 }}>View all applications</Link>
-
+          <Box sx={{ ml: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+                mt: 5,
+              }}
+            >
+              <Typography variant="h5" component="h2">
+                Your Applications
+              </Typography>
+              <Link
+                component="button"
+                onClick={goToApplications}
+                underline="hover"
+                sx={{ fontWeight: 500, mr: 5 }}
+              >
+                View all applications
+              </Link>
             </Box>
-            <Paper sx={{ width: "80%", overflow: "hidden" }}>
+            <Paper sx={{ width: "97%", overflow: "hidden" }}>
               <TableContainer>
                 <Table sx={{ minWidth: 650 }}>
                   <TableHead>
@@ -251,24 +268,29 @@ export default function JobSeekerDashboard() {
                   </TableHead>
                   <TableBody>
                     {applications.length > 0 ? (
-                      applications.map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell sx={{ fontWeight: 500 }}>
-                            {row.job.title}
-                          </TableCell>
-                          <TableCell>{row.job.company_name}</TableCell>
-                          <TableCell>
-                            {new Date(row.applied_at).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <StatusBadge status={row.status} />
-                          </TableCell>
-                        </TableRow>
-                      ))
+                      applications.slice(0, 4).map(
+                        (
+                          row,
+                          index // show only first 5
+                        ) => (
+                          <TableRow key={row.id || index}>
+                            <TableCell sx={{ fontWeight: 500 }}>
+                              {row.job.title}
+                            </TableCell>
+                            <TableCell>{row.job.company.name}</TableCell>
+                            <TableCell>
+                              {new Date(row.applied_at).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              <StatusBadge status={row.status} />
+                            </TableCell>
+                          </TableRow>
+                        )
+                      )
                     ) : (
                       <TableRow>
                         <TableCell colSpan={4} align="center">
-                          Nos applications found
+                          No applications found
                         </TableCell>
                       </TableRow>
                     )}

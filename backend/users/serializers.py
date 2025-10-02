@@ -164,3 +164,30 @@ class JobSeekerSerializer(serializers.ModelSerializer):
 
     def get_skill_names(self, obj):  # 👈 must match the field name
         return [skill.name for skill in obj.skills.all()]
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = [
+            "id",
+            "name",
+            "description",
+            "website",
+            "location",
+            "industry",
+        ]  # or list specific fields you want
+
+
+class CompanyRepresentativeSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CompanyRepresentative
+        fields = ["id", "name", "role"]
+
+    def get_name(self, obj):
+        # Return full name if available, otherwise username
+        user = obj.user
+        full_name = f"{user.first_name} {user.last_name}".strip()
+        return {full_name or user.email}

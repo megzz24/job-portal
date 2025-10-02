@@ -86,12 +86,15 @@ const SignIn = () => {
           </button>
 
           <div className="register-link">
-            <p>
-              Don’t have an account?{" "}
-            </p>
-              <Link to="/jobseeker/signup">Sign Up as <b>JobSeeker</b></Link>{" "}
-              or{" "}
-              <Link to="/companyrep/signup"> as <b>Company Rep</b></Link>
+            <p>Don’t have an account? </p>
+            <Link to="/jobseeker/signup">
+              Sign Up as <b>JobSeeker</b>
+            </Link>{" "}
+            or{" "}
+            <Link to="/companyrep/signup">
+              {" "}
+              as <b>Company Rep</b>
+            </Link>
           </div>
         </form>
       </div>

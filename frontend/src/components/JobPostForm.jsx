@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const JobPostForm = () => {
   // State to manage the current step of the form
@@ -6,14 +6,14 @@ const JobPostForm = () => {
 
   // State to hold all the form data from all steps
   const [formData, setFormData] = useState({
-    jobTitle: '',
-    companyName: '',
-    location: '',
-    jobType: 'Full-time', // Default value
-    salaryMin: '',
-    salaryMax: '',
-    jobDescription: '',
-    jobRequirements: '',
+    jobTitle: "",
+    companyName: "",
+    location: "",
+    jobType: "Full-time", // Default value
+    salaryMin: "",
+    salaryMax: "",
+    jobDescription: "",
+    jobRequirements: "",
   });
 
   // Handler to update form data state on input change
@@ -32,18 +32,22 @@ const JobPostForm = () => {
   // Placeholder for final form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Final Form Data:', formData);
+    console.log("Final Form Data:", formData);
     // Here you would typically send the data to your server
-    alert('Job posting submitted successfully! (Check the console for data)');
+    alert("Job posting submitted successfully! (Check the console for data)");
   };
 
   return (
     <div className="w-full">
       {/* Header updates based on the current step */}
       <header className="p-6 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-800">Create a Job Posting</h2>
+        <h2 className="text-2xl font-bold text-gray-800">
+          Create a Job Posting
+        </h2>
         <p className="text-sm text-gray-500 mt-1">
-          {step === 1 ? 'Step 1 of 2: Basic Details' : 'Step 2 of 2: Role Information'}
+          {step === 1
+            ? "Step 1 of 2: Basic Details"
+            : "Step 2 of 2: Role Information"}
         </p>
       </header>
 
@@ -54,7 +58,10 @@ const JobPostForm = () => {
           {step === 1 && (
             <>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5" htmlFor="jobTitle">
+                <label
+                  className="block text-sm font-semibold text-gray-700 mb-1.5"
+                  htmlFor="jobTitle"
+                >
                   Job Title
                 </label>
                 <input
@@ -67,7 +74,10 @@ const JobPostForm = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5" htmlFor="companyName">
+                <label
+                  className="block text-sm font-semibold text-gray-700 mb-1.5"
+                  htmlFor="companyName"
+                >
                   Company Name
                 </label>
                 <input
@@ -80,7 +90,10 @@ const JobPostForm = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5" htmlFor="location">
+                <label
+                  className="block text-sm font-semibold text-gray-700 mb-1.5"
+                  htmlFor="location"
+                >
                   Location
                 </label>
                 <input
@@ -99,7 +112,10 @@ const JobPostForm = () => {
           {step === 2 && (
             <>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5" htmlFor="jobType">
+                <label
+                  className="block text-sm font-semibold text-gray-700 mb-1.5"
+                  htmlFor="jobType"
+                >
                   Job Type
                 </label>
                 <select
@@ -116,7 +132,9 @@ const JobPostForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Proposed Salary (Annual)</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Proposed Salary (Annual)
+                </label>
                 <div className="flex items-center gap-3">
                   <input
                     className="form-input w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
@@ -139,7 +157,10 @@ const JobPostForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5" htmlFor="jobDescription">
+                <label
+                  className="block text-sm font-semibold text-gray-700 mb-1.5"
+                  htmlFor="jobDescription"
+                >
                   Job Description
                 </label>
                 <textarea
@@ -153,7 +174,10 @@ const JobPostForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5" htmlFor="jobRequirements">
+                <label
+                  className="block text-sm font-semibold text-gray-700 mb-1.5"
+                  htmlFor="jobRequirements"
+                >
                   Skills & Requirements
                 </label>
                 <textarea
@@ -192,7 +216,7 @@ const JobPostForm = () => {
               Proceed to Next Step
             </button>
           )}
-          
+
           {step === 2 && (
             <button
               type="submit"

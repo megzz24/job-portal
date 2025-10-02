@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaRegUser } from "react-icons/fa";
 import { FaRegBuilding } from "react-icons/fa";
 import { MdOutlineLock } from "react-icons/md";
-import wallpaper from "../../assets/corporate.avif"; 
+import wallpaper from "../../assets/corporate.avif";
 import "../LoginForm.css";
 import apiClient from "../../apiClient.js";
 
@@ -46,9 +46,9 @@ const CompanyRepSignUp = () => {
       console.error(err);
       setError(
         err.response?.data?.email?.[0] ||
-        err.response?.data?.password?.[0] ||
-        err.response?.data?.company_name?.[0] ||
-        "Registration failed. Please try again."
+          err.response?.data?.password?.[0] ||
+          err.response?.data?.company_name?.[0] ||
+          "Registration failed. Please try again."
       );
     }
   };
@@ -62,7 +62,9 @@ const CompanyRepSignUp = () => {
         <form onSubmit={handleSubmit}>
           <h1>Sign Up</h1>
 
-          {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+          {error && (
+            <p style={{ color: "red", textAlign: "center" }}>{error}</p>
+          )}
 
           <div className="input-box">
             <input

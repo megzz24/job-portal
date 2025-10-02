@@ -12,7 +12,9 @@ const Landing = () => {
     >
       <div className="wrapper landing-wrapper">
         <h1>Join Us</h1>
-        <p className="subtitle">Are you a Job Seeker or a Company Representative?</p>
+        <p className="subtitle">
+          Are you a Job Seeker or a Company Representative?
+        </p>
 
         <div className="role-buttons">
           <button onClick={() => navigate("/jobseeker/signup")}>

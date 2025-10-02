@@ -9,7 +9,7 @@ import apiClient from "../../apiClient.js";
 const JobSeekerSignUp = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -24,7 +24,7 @@ const JobSeekerSignUp = () => {
 
     try {
       const response = await apiClient.post("/users/jobseeker/register/", {
-        email: formData.username, // assuming backend uses email as username
+        email: formData.email, // assuming backend uses email as username
         password: formData.password,
         role: "jobseeker",
       });
@@ -61,9 +61,9 @@ const JobSeekerSignUp = () => {
           <div className="input-box">
             <input
               type="email"
-              name="username"
+              name="email"
               placeholder="Email"
-              value={formData.username}
+              value={formData.email}
               onChange={handleChange}
               required
             />

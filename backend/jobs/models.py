@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from users.models import CompanyRepresentative
 
 # Skill model
 class Skill(models.Model):
@@ -27,6 +28,14 @@ class Job(models.Model):
     skills = models.ManyToManyField('Skill', blank=True, related_name='jobs')
     posted_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    remote_status = models.CharField(max_length=3, choices=[("Yes", "Yes"), ("No", "No")], default="No")
+    posted_by = models.ForeignKey(
+        CompanyRepresentative, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name="posted_jobs"
+    )
     
     class Meta:
         ordering = ['-posted_at']
@@ -50,6 +59,7 @@ class Application(models.Model):
     cover_letter = models.TextField(blank=True, null=True)
     applied_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     
     class Meta:
         ordering = ['-applied_at']

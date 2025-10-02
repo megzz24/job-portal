@@ -14,30 +14,36 @@ import JobSeekerProfile from "./pages/JobSeeker/Profile";
 import JobSeekerSettings from "./pages/JobSeeker/Settings";
 import CompanyRepProfile from "./pages/CompanyRep/Profile";
 import CompanyRepSettings from "./pages/CompanyRep/Settings";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/jobseeker/signup" element={<JobSeekerSignUp />} />
-      <Route path="/companyrep/signup" element={<CompanyRepSignUp />} />
-      <Route path="/signin" element={<SignIn />} />
-      
-      <Route path="/jobseeker/dashboard" element={<JobSeekerDashboard />} />
+    <>
+      {/* Global toast container */}
+      <Toaster position="top-center" reverseOrder={false} />
 
-      <Route path="/jobseeker/jobfinder" element={<JobFinder />} />
-  <Route path="/jobseeker/applications" element={<JobSeekerApplications />} />
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/jobseeker/signup" element={<JobSeekerSignUp />} />
+        <Route path="/companyrep/signup" element={<CompanyRepSignUp />} />
+        <Route path="/signin" element={<SignIn />} />
 
-      <Route path="/jobseeker/profile" element={<JobSeekerProfile />} />
-      <Route path="/jobseeker/settings" element={<JobSeekerSettings />} />
-      
-      <Route path="/companyrep/jobposts" element={<Jobposts />} />
-  <Route path="/companyrep/applications" element={<Applications />} />
-      <Route path="/companyrep/dashboard" element={<CompanyRepDashboard />} />
-      <Route path="/companyrep/profile" element={<CompanyRepProfile />} />
-      <Route path="/companyrep/settings" element={<CompanyRepSettings />} />
+        <Route path="/jobseeker/dashboard" element={<JobSeekerDashboard />} />
+        <Route path="/jobseeker/jobs" element={<JobFinder />} />
+        <Route
+          path="/jobseeker/applications"
+          element={<JobSeekerApplications />}
+        />
+        <Route path="/jobseeker/profile" element={<JobSeekerProfile />} />
+        <Route path="/jobseeker/settings" element={<JobSeekerSettings />} />
 
-    </Routes>
+        <Route path="/companyrep/jobposts" element={<Jobposts />} />
+        <Route path="/companyrep/applications" element={<Applications />} />
+        <Route path="/companyrep/dashboard" element={<CompanyRepDashboard />} />
+        <Route path="/companyrep/profile" element={<CompanyRepProfile />} />
+        <Route path="/companyrep/settings" element={<CompanyRepSettings />} />
+      </Routes>
+    </>
   );
 }
 

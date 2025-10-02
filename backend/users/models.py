@@ -109,4 +109,6 @@ class CompanyRepresentative(models.Model):
     role = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user.first_name or ''} {self.user.last_name or ''} ({self.company.name})".strip()
+        user = self.user
+        full_name = f"{user.first_name} {user.last_name}".strip()
+        return f"{full_name or user.email} ({self.company.name})"
