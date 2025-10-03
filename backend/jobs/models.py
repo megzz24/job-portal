@@ -36,6 +36,7 @@ class Job(models.Model):
         blank=True,
         related_name="posted_jobs"
     )
+    is_open = models.BooleanField(default=True)  
     
     class Meta:
         ordering = ['-posted_at']

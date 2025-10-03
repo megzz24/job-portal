@@ -92,13 +92,14 @@ export default function JobSeekerDashboard() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const goToApplications = () => navigate("/jobseeker/applications");
+  const [recommendedJobs, setRecommendedJobs] = useState([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         const [summaryRes, applicationsRes] = await Promise.all([
-          apiClient.get("/jobs/summary/"),
-          apiClient.get("/jobs/applications/"),
+          apiClient.get("jobs/summary/"),
+          apiClient.get("jobs/applications/"),
         ]);
         setSummary(summaryRes.data);
         setApplications(applicationsRes.data);
@@ -109,6 +110,18 @@ export default function JobSeekerDashboard() {
       }
     };
     fetchDashboardData();
+  }, []);
+
+  useEffect(() => {
+    const fetchRecommendedJobs = async () => {
+      try {
+        const res = await apiClient.get("jobs/recommended/"); // your endpoint
+        setRecommendedJobs(res.data);
+      } catch (err) {
+        console.error("Failed to fetch recommended jobs:", err);
+      }
+    };
+    fetchRecommendedJobs();
   }, []);
 
   if (loading) {
@@ -298,6 +311,87 @@ export default function JobSeekerDashboard() {
                 </Table>
               </TableContainer>
             </Paper>
+          </Box>
+
+          {/* Recommended Jobs */}
+          <Box sx={{ ml: 1, mt: 6 }}>
+            <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+              Recommended Jobs
+            </Typography>
+
+            {recommendedJobs.length > 0 ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  overflowX: "auto",
+                  gap: 2,
+                  pb: 1,
+                  "&::-webkit-scrollbar": { height: 6 },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#9CA3AF",
+                    borderRadius: 3,
+                  },
+                }}
+              >
+                {recommendedJobs.slice(0, 10).map((job) => (
+                  <Paper
+                    key={job.id}
+                    sx={{
+                      minWidth: 250, // 👈 ensures horizontal card layout
+                      maxWidth: 320,
+                      flexShrink: 0,
+                      p: 3,
+                      borderRadius: 2,
+                      cursor: "pointer",
+                    }}
+                    onClick={() =>
+                      navigate(`/jobseeker/jobs`, { state: { jobId: job.id } })
+                    } // 👈 pass jobId
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                      <Avatar sx={{ bgcolor: "#b8e6fe", mr: 2, color:"#00a6f4" }}>
+                        {job.company.name?.charAt(0).toUpperCase()}
+                      </Avatar>
+                      <Box>
+                        <Typography sx={{ fontWeight: 600 }}>
+                          {job.title}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {job.company.name}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Box sx={{ mt: 2 }}>
+                      {job.skills?.map((skill, idx) => (
+                        <Box
+                          key={idx}
+                          component="span"
+                          sx={{
+                            display: "inline-block",
+                            mr: 1,
+                            mb: 1,
+                            px: 1.5,
+                            py: 0.5,
+                            bgcolor: "#fccee8",
+                            borderRadius: 1,
+                            fontSize: "0.75rem",
+                            fontWeight: 500,
+                            color: "#00000",
+                          }}
+                        >
+                          {skill}
+                        </Box>
+                      ))}
+                    </Box>
+                  </Paper>
+                ))}
+              </Box>
+            ) : (
+              <Typography color="text.secondary">
+                No recommended jobs found
+              </Typography>
+            )}
           </Box>
         </div>
       </div>

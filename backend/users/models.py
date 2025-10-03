@@ -76,6 +76,11 @@ class JobSeeker(models.Model):
     education = models.JSONField(
         blank=True, null=True, default=list
     )  # e.g., [{"degree": "", "institution": "", "year": ""}]
+    
+    saved_jobs = models.ManyToManyField(
+        "jobs.Job", blank=True, related_name="saved_by"
+    )
+
 
     def __str__(self):
         return f"{self.user.first_name or ''} {self.user.last_name or ''}".strip()

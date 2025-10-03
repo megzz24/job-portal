@@ -21,9 +21,10 @@ class JobAdmin(admin.ModelAdmin):
         "job_type",
         "salary_range",
         "posted_at",
+        "is_open",  # added
         "posted_by_name",
     )
-    list_filter = ("job_type", "company", "location")
+    list_filter = ("job_type", "company", "location", "is_open")  # added is_open filter
     search_fields = ("title", "company__name", "description", "location")
     filter_horizontal = ("skills",)
     ordering = ("-posted_at",)
@@ -36,6 +37,7 @@ class JobAdmin(admin.ModelAdmin):
         return "-"
 
     posted_by_name.short_description = "Posted By"
+
 
 
 # Application admin

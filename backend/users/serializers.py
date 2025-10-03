@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import User, JobSeeker, CompanyRepresentative, Company
-from jobs.models import Skill
+from jobs.models import Skill, Job
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -121,6 +121,11 @@ class JobSeekerSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source="user.first_name", required=False)
     last_name = serializers.CharField(source="user.last_name", required=False)
     email = serializers.EmailField(source="user.email", read_only=True)
+    
+    saved_jobs = serializers.PrimaryKeyRelatedField(
+        queryset=Job.objects.all(), many=True, required=False
+    )
+    saved_job_titles = serializers.SerializerMethodField() 
 
     class Meta:
         model = JobSeeker
@@ -138,11 +143,13 @@ class JobSeekerSerializer(serializers.ModelSerializer):
             "education",
             "skills",
             "skill_names",
+            "saved_jobs",        # ✅ add this
+            "saved_job_titles",  # ✅ add this
         ]
         read_only_fields = ("user",)
 
     def update(self, instance, validated_data):
-        # Extract user fields
+        # Update user fields
         user_data = validated_data.pop("user", {})
         if "first_name" in user_data:
             instance.user.first_name = user_data["first_name"]
@@ -150,12 +157,17 @@ class JobSeekerSerializer(serializers.ModelSerializer):
             instance.user.last_name = user_data["last_name"]
         instance.user.save()
 
-        # Handle skills
+        # Update skills
         skills_data = validated_data.pop("skills", None)
         if skills_data is not None:
             instance.skills.set(skills_data)
 
-        # Update JobSeeker fields
+        # Update saved jobs
+        saved_jobs_data = validated_data.pop("saved_jobs", None)
+        if saved_jobs_data is not None:
+            instance.saved_jobs.set(saved_jobs_data)
+
+        # Update other fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
@@ -164,6 +176,9 @@ class JobSeekerSerializer(serializers.ModelSerializer):
 
     def get_skill_names(self, obj):  # 👈 must match the field name
         return [skill.name for skill in obj.skills.all()]
+    
+    def get_saved_job_titles(self, obj):
+        return [job.title for job in obj.saved_jobs.all()]
 
 
 class CompanySerializer(serializers.ModelSerializer):

@@ -20,7 +20,8 @@ class JobSerializer(serializers.ModelSerializer):
             "skills",
             "description",
             "remote_status",
-            "posted_by"
+            "posted_by",
+            "is_open",
         ]
 
 

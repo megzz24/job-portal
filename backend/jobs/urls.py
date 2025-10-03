@@ -8,5 +8,8 @@ urlpatterns = [
     path("jobslist/", views.JobListView.as_view(), name="job-list"),
     path("<int:pk>/", views.JobDetailView.as_view(), name="job-detail"),
     path("<int:job_id>/apply/", views.apply_job, name="job-apply"),
-    path("<int:job_id>/save/", views.save_job, name="job-save"),
+    path("<int:job_id>/save/", views.save_job, name="save-job"),
+    path("<int:job_id>/unsave/", views.unsave_job, name="unsave-job"),
+    path("saved/", views.saved_jobs_list, name="saved-jobs"),
+    path("recommended/", views.recommended_jobs, name="recommended-jobs"),
 ]

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import JobSeekerSideNav from "../../components/JobSeekerSideNav";
 import Modal from "../../components/Modal";
 import ApplyForm from "../../components/ApplyForm";
@@ -168,15 +168,36 @@ export default function CareerConnect() {
   const [companyFilter, setCompanyFilter] = useState("");
   const [showSavedOnly, setShowSavedOnly] = useState(false);
 
+  const location = useLocation();
+  const { jobId } = location.state || {};
+
   useEffect(() => {
     apiClient
       .get("jobs/jobslist/", { skipAuth: false })
       .then((res) => {
         setJobs(res.data);
-        setSelectedJob(res.data[0] || null);
+
+        // If jobId passed, select that job
+        if (jobId) {
+          const match = res.data.find((job) => job.id === jobId);
+          setSelectedJob(match || res.data[0] || null);
+        } else {
+          setSelectedJob(res.data[0] || null);
+        }
       })
       .catch(() => setError("Failed to fetch jobs"))
       .finally(() => setLoading(false));
+  }, [jobId]);
+
+  useEffect(() => {
+    apiClient
+      .get("jobs/saved/") // your endpoint
+      .then((res) => {
+        // Assuming res.data is an array of saved jobs
+        const savedJobIds = res.data.map((job) => job.id);
+        setSavedJobs(savedJobIds);
+      })
+      .catch(() => console.log("Failed to fetch saved jobs"));
   }, []);
 
   const handleJobClick = (job) => {
@@ -191,16 +212,18 @@ export default function CareerConnect() {
   const onApplySuccess = (data) => console.log("Application submitted", data);
 
   const handleSaveJob = (jobId) => {
+    const isSaved = savedJobs.includes(jobId);
+
+    const url = `jobs/${jobId}/${isSaved ? "unsave" : "save"}/`;
+
     apiClient
-      .post(`jobs/${jobId}/save/`)
-      .then(() =>
+      .post(url)
+      .then(() => {
         setSavedJobs((prev) =>
-          prev.includes(jobId)
-            ? prev.filter((id) => id !== jobId)
-            : [...prev, jobId]
-        )
-      )
-      .catch(() => alert("Failed to save job"));
+          isSaved ? prev.filter((id) => id !== jobId) : [...prev, jobId]
+        );
+      })
+      .catch(() => alert("Failed to update saved job"));
   };
 
   // --- Filtered Jobs ---
@@ -419,7 +442,7 @@ export default function CareerConnect() {
                     <div className="flex flex-wrap gap-2 mt-2">
                       {/* Remote Status */}
                       {job.remote_status && (
-                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-200 text-green-700">
+                        <span className="px-2 py-1 rounded-full text-xs bg-lime-100 text-gray-700">
                           {job.remote_status.toLowerCase() === "yes"
                             ? "Remote"
                             : "Onsite"}
@@ -428,7 +451,7 @@ export default function CareerConnect() {
 
                       {/* Job Type */}
                       {job.job_type && (
-                        <span className="bg-green-200 text-green-700 px-2 py-1 rounded-full text-xs font-semibold">
+                        <span className="bg-orange-100 text-gray-700 px-2 py-1 rounded-full text-xs">
                           {job.job_type}
                         </span>
                       )}
@@ -442,6 +465,13 @@ export default function CareerConnect() {
                           {skill}
                         </span>
                       ))}
+
+                      {/* Bookmark Tag */}
+                      {savedJobs.includes(job.id) && (
+                        <span className="bg-indigo-200 text-gray-500 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                          <SavedIcon className="h-4 w-4" />
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
