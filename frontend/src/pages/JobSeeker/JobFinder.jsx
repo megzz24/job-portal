@@ -551,8 +551,8 @@ export default function CareerConnect() {
                       value={
                         selectedJob.posted_by
                           ? `${selectedJob.posted_by.name}${
-                              selectedJob.posted_by.role
-                                ? ` (${selectedJob.posted_by.role})`
+                              selectedJob.posted_by.department
+                                ? ` (${selectedJob.posted_by.department})`
                                 : ""
                             }`
                           : "N/A"

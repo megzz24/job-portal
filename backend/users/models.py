@@ -111,7 +111,7 @@ class CompanyRepresentative(models.Model):
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name="representatives"
     )
-    role = models.CharField(max_length=50, blank=True, null=True)
+    department = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         user = self.user

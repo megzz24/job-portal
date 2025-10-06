@@ -50,7 +50,7 @@ class CompanyRepRegistrationSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(required=False, allow_blank=True)
     company_id = serializers.IntegerField(required=False, write_only=True)
     company_name = serializers.CharField(required=False, write_only=True)
-    role = serializers.CharField(required=False, allow_blank=True)
+    department = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = CompanyRepresentative
@@ -60,7 +60,7 @@ class CompanyRepRegistrationSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "profile_picture",
-            "role",
+            "department",
             "company_id",
             "company_name",
         ]
@@ -199,7 +199,7 @@ class CompanyRepresentativeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CompanyRepresentative
-        fields = ["id", "name", "role"]
+        fields = ["id", "name", "department"]
 
     def get_name(self, obj):
         # Return full name if available, otherwise username

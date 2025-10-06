@@ -43,7 +43,7 @@ class CompanyRepRegisterView(generics.CreateAPIView):
             "first_name": company_rep.user.first_name,
             "last_name": company_rep.user.last_name,
             "company": company_rep.company.name,
-            "role": company_rep.role,  
+            "department": company_rep.department,  
             "access": str(refresh.access_token),
             "refresh": str(refresh)
         }, status=status.HTTP_201_CREATED)

@@ -114,13 +114,13 @@ class CompanyAdmin(admin.ModelAdmin):
 # CompanyRepresentative Admin
 @admin.register(CompanyRepresentative)
 class CompanyRepresentativeAdmin(admin.ModelAdmin):
-    list_display = ("user", "get_email", "company", "role")
+    list_display = ("user", "get_email", "company", "department")
     search_fields = (
         "user__email",
         "user__first_name",
         "user__last_name",
         "company__name",
-        "role",
+        "department",
     )
 
     def get_email(self, obj):
