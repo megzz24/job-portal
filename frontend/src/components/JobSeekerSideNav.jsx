@@ -51,18 +51,6 @@ const JobSeekerSideNav = ({ className = "" }) => {
         <div className="logo-left">
           <h1 className="logo-text">{collapsed ? "CC" : "CareerConnect"}</h1>
         </div>
-        <div className="logo-actions">
-          <button
-            className="nav-collapse-toggle"
-            onClick={toggleCollapsed}
-            aria-pressed={collapsed}
-            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <span className="material-symbols-outlined">
-              {collapsed ? "chevron_right" : "chevron_left"}
-            </span>
-          </button>
-        </div>
       </div>
 
       <ul className="nav-links">
@@ -87,6 +75,19 @@ const JobSeekerSideNav = ({ className = "" }) => {
           <span className="nav-label">Logout</span>
         </button>
       </div>
+
+      {/* Floating edge toggle */}
+      <button
+        className="nav-edge-toggle"
+        onClick={toggleCollapsed}
+        aria-pressed={collapsed}
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        <span className="material-symbols-outlined">
+          {collapsed ? "chevron_right" : "chevron_left"}
+        </span>
+      </button>
     </nav>
   );
 };

@@ -1,6 +1,7 @@
 /* --- Side Navigation Styles --- */
 :root {
   --sidenav-width: 280px;
+  --sidenav-collapsed-width: 72px;
   --primary: #0ea5e9;
   --primary-light: #e0f2fe;
   --background-light: #f8fafc;
@@ -31,6 +32,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  justify-content: space-between;
 }
 
 .logo-left {
@@ -40,7 +42,32 @@
 }
 
 .logo-actions {
-  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-collapse-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.nav-collapse-toggle:hover {
+  background-color: var(--background-light);
+  transform: translateX(2px);
+}
+
+/* Slightly smaller icon when collapsed */
+body.sidenav-collapsed .nav-collapse-toggle .material-symbols-outlined {
+  font-size: 1rem;
 }
 
 .logo-text {
@@ -88,13 +115,15 @@ body.sidenav-collapsed .logo-text {
 }
 
 /* Collapsed sidenav state - applied to body.sidenav-collapsed */
+/* Collapsed sidenav state - applied to body.sidenav-collapsed */
 body.sidenav-collapsed .side-nav {
-  width: 88px;
+  width: var(--sidenav-collapsed-width);
   padding: 1rem 0.5rem;
 }
 
+/* Make main content shift match the collapsed width exactly */
 body.sidenav-collapsed .main-content-wrapper {
-  margin-left: 72px;
+  margin-left: var(--sidenav-collapsed-width);
 }
 
 .nav-label {
@@ -112,6 +141,55 @@ body.sidenav-collapsed .nav-label {
   margin-top: auto; /* push to bottom */
   display: flex;
   align-items: center;
+}
+
+.nav-footer .footer-toggle {
+  margin-right: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+/* When collapsed, keep the toggle visible but compact */
+body.sidenav-collapsed .nav-footer {
+  justify-content: center;
+}
+
+/* Floating edge handle (right edge of sidebar) */
+.nav-edge-toggle {
+  position: absolute;
+  right: -18px; /* hang outside the sidebar */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(2,6,23,0.08);
+  cursor: pointer;
+  z-index: 60;
+  transition: transform 0.15s ease, right 0.15s ease;
+}
+
+.nav-edge-toggle .material-symbols-outlined { font-size: 1.15rem; }
+
+/* Pull the handle in when collapsed so it stays visually attached */
+body.sidenav-collapsed .nav-edge-toggle {
+  right: -12px;
+  height: 52px;
+}
+
+/* Hide floating handle on small screens where a mobile menu toggle is used */
+@media (max-width: 768px) {
+  .nav-edge-toggle { display: none; }
+  .side-nav.open .nav-edge-toggle { display: none; }
+}
+
+/* When side-nav has an explicit open class on mobile, keep handle slightly inset */
+.side-nav.open .nav-edge-toggle {
+  right: -10px;
 }
 
 .nav-logout {

@@ -292,6 +292,11 @@ body.sidenav-collapsed .main-content-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  /* Ensure applicant view aligns with main content and is offset from fixed sidebar */
+  width: calc(100% - var(--sidenav-width));
+  margin-left: var(--sidenav-width);
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .applicant-header {
@@ -363,6 +368,13 @@ body.sidenav-collapsed .main-content-wrapper {
   max-width: 80rem;
   margin: 0 auto;
   padding: 1.5rem 1rem 5rem 1rem; /* Padding bottom for potential fixed footer */
+  box-sizing: border-box;
+}
+
+/* When sidebar is collapsed, adjust applicant view offset */
+body.sidenav-collapsed .applicant-view-container {
+  width: calc(100% - 72px);
+  margin-left: 72px;
 }
 
 .job-details-header {

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Jobposts.css";
 import Modal from "../../components/Modal";
 import JobPostForm from "../../components/JobPostForm";
+import CompanyRepSideNav from '../../components/CompanyRepSideNav';
 // import ResponsiveAppBar from '../../components/ResponsiveAppBar'; // Removed in favor of vertical navigation
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 
@@ -105,39 +106,7 @@ const JobCard = ({ job, onSelect }) => (
   </div>
 );
 
-const SideNav = ({ className }) => (
-  <nav className={`side-nav ${className || ""}`}>
-    <div className="logo-container">
-      <h1 className="logo-text">CareerConnect</h1>
-    </div>
-    <ul className="nav-links">
-      <li>
-        <a href="/companyrep/dashboard" className="nav-link">
-          <span className="material-symbols-outlined">dashboard</span>
-          Dashboard
-        </a>
-      </li>
-      <li>
-        <a href="/companyrep/jobposts" className="nav-link active">
-          <span className="material-symbols-outlined">work</span>
-          Job Posts
-        </a>
-      </li>
-      <li>
-        <a href="/companyrep/profile" className="nav-link">
-          <span className="material-symbols-outlined">person</span>
-          Profile
-        </a>
-      </li>
-      <li>
-        <a href="/companyrep/settings" className="nav-link">
-          <span className="material-symbols-outlined">settings</span>
-          Settings
-        </a>
-      </li>
-    </ul>
-  </nav>
-);
+// using shared CompanyRepSideNav for consistent collapse/expand behavior
 
 const JobListings = ({ onJobSelect, onNewJob }) => (
   <div className="job-portal-app">
@@ -310,9 +279,13 @@ function Jobposts() {
             {menuOpen ? "close" : "menu"}
           </span>
         </button>
-        <SideNav className={menuOpen ? "open" : ""} />
+  <CompanyRepSideNav className={menuOpen ? "open" : ""} />
         {selectedJob ? (
-          <ApplicantList job={selectedJob} onBack={handleBack} />
+          <div className="main-content-wrapper">
+            <div className="main-content">
+              <ApplicantList job={selectedJob} onBack={handleBack} />
+            </div>
+          </div>
         ) : (
           <div className="main-content-wrapper">
             <div className="main-content">
