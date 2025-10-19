@@ -10,7 +10,7 @@ const CompanyRepSideNav = ({ className = "" }) => {
     e.preventDefault();
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-    window.location.href = "/login";
+    window.location.href = "/signin";
   };
 
   const [collapsed, setCollapsed] = React.useState(() => {
@@ -101,7 +101,7 @@ const CompanyRepSideNav = ({ className = "" }) => {
         className="nav-edge-toggle"
         onClick={toggleCollapsed}
         aria-pressed={collapsed}
-        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
         <span className="material-symbols-outlined">

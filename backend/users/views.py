@@ -1,10 +1,16 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import JobSeekerRegistrationSerializer, CompanyRepRegistrationSerializer, JobSeekerSerializer, CustomTokenObtainPairSerializer
+from .serializers import (
+    JobSeekerRegistrationSerializer,
+    CompanyRepRegistrationSerializer,
+    JobSeekerSerializer,
+    CustomTokenObtainPairSerializer,
+)
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import JobSeeker
 from rest_framework.parsers import MultiPartParser, FormParser
+
 
 class JobSeekerRegisterView(generics.CreateAPIView):
     serializer_class = JobSeekerRegistrationSerializer
@@ -17,14 +23,18 @@ class JobSeekerRegisterView(generics.CreateAPIView):
         # Generate JWT tokens
         refresh = RefreshToken.for_user(jobseeker.user)
 
-        return Response({
-            "id": jobseeker.id,
-            "email": jobseeker.user.email,
-            "first_name": jobseeker.user.first_name,
-            "last_name": jobseeker.user.last_name,
-            "access": str(refresh.access_token),
-            "refresh": str(refresh)
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                "id": jobseeker.id,
+                "email": jobseeker.user.email,
+                "first_name": jobseeker.user.first_name,
+                "last_name": jobseeker.user.last_name,
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
 
 class CompanyRepRegisterView(generics.CreateAPIView):
     serializer_class = CompanyRepRegistrationSerializer
@@ -37,20 +47,25 @@ class CompanyRepRegisterView(generics.CreateAPIView):
         # Generate JWT tokens
         refresh = RefreshToken.for_user(company_rep.user)
 
-        return Response({
-            "id": company_rep.id,
-            "email": company_rep.user.email,
-            "first_name": company_rep.user.first_name,
-            "last_name": company_rep.user.last_name,
-            "company": company_rep.company.name,
-            "department": company_rep.department,  
-            "access": str(refresh.access_token),
-            "refresh": str(refresh)
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                "id": company_rep.id,
+                "email": company_rep.user.email,
+                "first_name": company_rep.user.first_name,
+                "last_name": company_rep.user.last_name,
+                "company": company_rep.company.name,
+                "department": company_rep.department,
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-    
+
+
 class JobSeekerProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = JobSeekerSerializer
@@ -58,7 +73,7 @@ class JobSeekerProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         # Returns the JobSeeker linked to the logged-in user
         return self.request.user.jobseeker_profile
-    
+
     def get(self, request):
         profile = request.user.jobseeker_profile
         serializer = JobSeekerSerializer(profile)
@@ -71,7 +86,8 @@ class JobSeekerProfileView(generics.RetrieveUpdateAPIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
-    
+
+
 class JobSeekerAvatarUpdateView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = JobSeekerSerializer
@@ -84,13 +100,18 @@ class JobSeekerAvatarUpdateView(generics.UpdateAPIView):
         avatar = request.FILES.get("avatar")
 
         if not avatar:
-            return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         profile.profile_picture = avatar
         profile.save()
 
-        return Response({"profile_picture": profile.profile_picture.url}, status=status.HTTP_200_OK)
-    
+        return Response(
+            {"profile_picture": profile.profile_picture.url}, status=status.HTTP_200_OK
+        )
+
+
 class JobSeekerResumeUploadView(generics.UpdateAPIView):
     serializer_class = JobSeekerSerializer
     permission_classes = [permissions.IsAuthenticated]

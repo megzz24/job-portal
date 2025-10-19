@@ -167,13 +167,15 @@ body.sidenav-collapsed .nav-footer {
   background: white;
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(2,6,23,0.08);
+  box-shadow: 0 4px 8px rgba(2, 6, 23, 0.08);
   cursor: pointer;
   z-index: 60;
   transition: transform 0.15s ease, right 0.15s ease;
 }
 
-.nav-edge-toggle .material-symbols-outlined { font-size: 1.15rem; }
+.nav-edge-toggle .material-symbols-outlined {
+  font-size: 1.15rem;
+}
 
 /* Pull the handle in when collapsed so it stays visually attached */
 body.sidenav-collapsed .nav-edge-toggle {
@@ -183,8 +185,12 @@ body.sidenav-collapsed .nav-edge-toggle {
 
 /* Hide floating handle on small screens where a mobile menu toggle is used */
 @media (max-width: 768px) {
-  .nav-edge-toggle { display: none; }
-  .side-nav.open .nav-edge-toggle { display: none; }
+  .nav-edge-toggle {
+    display: none;
+  }
+  .side-nav.open .nav-edge-toggle {
+    display: none;
+  }
 }
 
 /* When side-nav has an explicit open class on mobile, keep handle slightly inset */

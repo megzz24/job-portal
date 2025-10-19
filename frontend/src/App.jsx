@@ -1,7 +1,7 @@
 // App.jsx
 import { Routes, Route } from "react-router-dom";
 import JobSeekerSignUp from "../src/pages/JobSeeker/SignUp";
-import CompanyRepSignUp from "../src/pages/CompanyRep/Signup";
+import CompanyRepSignUp from "../src/pages/CompanyRep/SignUp";
 import SignIn from "./pages/signin";
 import JobSeekerDashboard from "./pages/JobSeeker/DashBoard";
 import CompanyRepDashboard from "./pages/CompanyRep/Dashboard";

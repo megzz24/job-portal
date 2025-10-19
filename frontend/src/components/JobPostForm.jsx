@@ -1,45 +1,79 @@
 import React, { useState } from "react";
+import apiClient from "../apiClient"; // Axios client
 
-const JobPostForm = () => {
-  // State to manage the current step of the form
+const JobPostForm = ({ refreshJobs, onClose }) => {
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
 
-  // State to hold all the form data from all steps
   const [formData, setFormData] = useState({
-    jobTitle: "",
-    companyName: "",
+    title: "",
     location: "",
-    jobType: "Full-time", // Default value
+    jobType: "full-time", // matches model choices
     salaryMin: "",
     salaryMax: "",
-    jobDescription: "",
-    jobRequirements: "",
+    description: "",
+    skills: "", // comma-separated skill names or IDs
+    remoteStatus: "No",
   });
 
-  // Handler to update form data state on input change
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  // Functions to navigate between steps
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
 
-  // Placeholder for final form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Final Form Data:", formData);
-    // Here you would typically send the data to your server
-    alert("Job posting submitted successfully! (Check the console for data)");
+    setLoading(true);
+
+    try {
+      const payload = {
+        title: formData.title,
+        description: formData.description,
+        location: formData.location,
+        job_type: formData.jobType,
+        salary_range:
+          formData.salaryMin && formData.salaryMax
+            ? `${formData.salaryMin}-${formData.salaryMax}`
+            : null,
+        remote_status: formData.remoteStatus,
+        skills: formData.skills
+          ? formData.skills.split(",").map((s) => s.trim())
+          : [],
+      };
+
+      const res = await apiClient.post("/jobs/jobpost/", payload);
+      console.log("Job created:", res.data);
+
+      if (refreshJobs) refreshJobs();
+
+      // Close the modal after posting
+      if (onClose) onClose();
+
+      // Optional: reset the form
+      setFormData({
+        title: "",
+        location: "",
+        jobType: "full-time",
+        salaryMin: "",
+        salaryMax: "",
+        description: "",
+        skills: "",
+        remoteStatus: "No",
+      });
+      setStep(1);
+    } catch (err) {
+      console.error("Error creating job:", err);
+      alert(err.response?.data?.detail || "Error creating job. Check console.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="w-full">
-      {/* Header updates based on the current step */}
       <header className="p-6 border-b border-gray-200">
         <h2 className="text-2xl font-bold text-gray-800">
           Create a Job Posting
@@ -51,44 +85,27 @@ const JobPostForm = () => {
         </p>
       </header>
 
-      {/* The main content area where the form is rendered */}
       <main className="p-6">
         <form className="space-y-5" onSubmit={handleSubmit}>
-          {/* ----- STEP 1 FIELDS ----- */}
           {step === 1 && (
             <>
               <div>
                 <label
                   className="block text-sm font-semibold text-gray-700 mb-1.5"
-                  htmlFor="jobTitle"
+                  htmlFor="title"
                 >
                   Job Title
                 </label>
                 <input
                   className="form-input w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  id="jobTitle"
+                  id="title"
                   placeholder="e.g., Senior React Developer"
                   type="text"
-                  value={formData.jobTitle}
+                  value={formData.title}
                   onChange={handleChange}
                 />
               </div>
-              <div>
-                <label
-                  className="block text-sm font-semibold text-gray-700 mb-1.5"
-                  htmlFor="companyName"
-                >
-                  Company Name
-                </label>
-                <input
-                  className="form-input w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  id="companyName"
-                  placeholder="e.g., Innovatech Solutions"
-                  type="text"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                />
-              </div>
+
               <div>
                 <label
                   className="block text-sm font-semibold text-gray-700 mb-1.5"
@@ -105,10 +122,27 @@ const JobPostForm = () => {
                   onChange={handleChange}
                 />
               </div>
+
+              <div>
+                <label
+                  className="block text-sm font-semibold text-gray-700 mb-1.5"
+                  htmlFor="remoteStatus"
+                >
+                  Remote?
+                </label>
+                <select
+                  id="remoteStatus"
+                  className="form-select w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  value={formData.remoteStatus}
+                  onChange={handleChange}
+                >
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
             </>
           )}
 
-          {/* ----- STEP 2 FIELDS ----- */}
           {step === 2 && (
             <>
               <div>
@@ -124,10 +158,9 @@ const JobPostForm = () => {
                   value={formData.jobType}
                   onChange={handleChange}
                 >
-                  <option>Full-time</option>
-                  <option>Part-time</option>
-                  <option>Contract</option>
-                  <option>Internship</option>
+                  <option value="full-time">Full-time</option>
+                  <option value="part-time">Part-time</option>
+                  <option value="internship">Internship</option>
                 </select>
               </div>
 
@@ -140,7 +173,7 @@ const JobPostForm = () => {
                     className="form-input w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                     id="salaryMin"
                     placeholder="₹ Minimum"
-                    type="number"
+                    type="text"
                     value={formData.salaryMin}
                     onChange={handleChange}
                   />
@@ -149,7 +182,7 @@ const JobPostForm = () => {
                     className="form-input w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                     id="salaryMax"
                     placeholder="₹ Maximum"
-                    type="number"
+                    type="text"
                     value={formData.salaryMax}
                     onChange={handleChange}
                   />
@@ -159,16 +192,16 @@ const JobPostForm = () => {
               <div>
                 <label
                   className="block text-sm font-semibold text-gray-700 mb-1.5"
-                  htmlFor="jobDescription"
+                  htmlFor="description"
                 >
                   Job Description
                 </label>
                 <textarea
                   className="form-textarea w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  id="jobDescription"
+                  id="description"
                   rows="4"
                   placeholder="Describe the role and responsibilities..."
-                  value={formData.jobDescription}
+                  value={formData.description}
                   onChange={handleChange}
                 ></textarea>
               </div>
@@ -176,25 +209,23 @@ const JobPostForm = () => {
               <div>
                 <label
                   className="block text-sm font-semibold text-gray-700 mb-1.5"
-                  htmlFor="jobRequirements"
+                  htmlFor="skills"
                 >
-                  Skills & Requirements
+                  Skills (comma separated)
                 </label>
-                <textarea
-                  className="form-textarea w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  id="jobRequirements"
-                  rows="4"
-                  placeholder="List key skills, qualifications, and experience needed..."
-                  value={formData.jobRequirements}
+                <input
+                  className="form-input w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  id="skills"
+                  placeholder="React, Django, Python"
+                  value={formData.skills}
                   onChange={handleChange}
-                ></textarea>
+                />
               </div>
             </>
           )}
         </form>
       </main>
 
-      {/* Footer with dynamic navigation buttons */}
       <footer className="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
         <div className="flex justify-between items-center">
           {step === 2 && (
@@ -222,8 +253,9 @@ const JobPostForm = () => {
               type="submit"
               onClick={handleSubmit}
               className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-8 rounded-lg shadow-md hover:shadow-lg hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300 ease-in-out"
+              disabled={loading}
             >
-              Post Job
+              {loading ? "Posting..." : "Post Job"}
             </button>
           )}
         </div>

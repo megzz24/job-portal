@@ -37,6 +37,12 @@ class Job(models.Model):
         related_name="posted_jobs"
     )
     is_open = models.BooleanField(default=True)  
+
+    def save(self, *args, **kwargs):
+        if self.posted_by and self.company != self.posted_by.company:
+            raise ValueError("Job company must match the representative's company")
+        super().save(*args, **kwargs)
+
     
     class Meta:
         ordering = ['-posted_at']
@@ -60,7 +66,7 @@ class Application(models.Model):
     cover_letter = models.TextField(blank=True, null=True)
     applied_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    resume = models.FileField(upload_to='resumes/')
     
     class Meta:
         ordering = ['-applied_at']

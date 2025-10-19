@@ -81,7 +81,7 @@ const JobSeekerSideNav = ({ className = "" }) => {
         className="nav-edge-toggle"
         onClick={toggleCollapsed}
         aria-pressed={collapsed}
-        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
         <span className="material-symbols-outlined">

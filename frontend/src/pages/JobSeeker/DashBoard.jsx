@@ -349,7 +349,9 @@ export default function JobSeekerDashboard() {
                     } // 👈 pass jobId
                   >
                     <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <Avatar sx={{ bgcolor: "#b8e6fe", mr: 2, color:"#00a6f4" }}>
+                      <Avatar
+                        sx={{ bgcolor: "#b8e6fe", mr: 2, color: "#00a6f4" }}
+                      >
                         {job.company.name?.charAt(0).toUpperCase()}
                       </Avatar>
                       <Box>

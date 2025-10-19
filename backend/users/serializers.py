@@ -121,11 +121,11 @@ class JobSeekerSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source="user.first_name", required=False)
     last_name = serializers.CharField(source="user.last_name", required=False)
     email = serializers.EmailField(source="user.email", read_only=True)
-    
+
     saved_jobs = serializers.PrimaryKeyRelatedField(
         queryset=Job.objects.all(), many=True, required=False
     )
-    saved_job_titles = serializers.SerializerMethodField() 
+    saved_job_titles = serializers.SerializerMethodField()
 
     class Meta:
         model = JobSeeker
@@ -143,18 +143,19 @@ class JobSeekerSerializer(serializers.ModelSerializer):
             "education",
             "skills",
             "skill_names",
-            "saved_jobs",        # ✅ add this
+            "saved_jobs",  # ✅ add this
             "saved_job_titles",  # ✅ add this
         ]
         read_only_fields = ("user",)
 
     def update(self, instance, validated_data):
         # Update user fields
-        user_data = validated_data.pop("user", {})
-        if "first_name" in user_data:
-            instance.user.first_name = user_data["first_name"]
-        if "last_name" in user_data:
-            instance.user.last_name = user_data["last_name"]
+        first_name = validated_data.pop("first_name", None)
+        last_name = validated_data.pop("last_name", None)
+        if first_name is not None:
+            instance.user.first_name = first_name
+        if last_name is not None:
+            instance.user.last_name = last_name
         instance.user.save()
 
         # Update skills
@@ -176,7 +177,7 @@ class JobSeekerSerializer(serializers.ModelSerializer):
 
     def get_skill_names(self, obj):  # 👈 must match the field name
         return [skill.name for skill in obj.skills.all()]
-    
+
     def get_saved_job_titles(self, obj):
         return [job.title for job in obj.saved_jobs.all()]
 
@@ -199,10 +200,10 @@ class CompanyRepresentativeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CompanyRepresentative
-        fields = ["id", "name", "department"]
+        fields = ["id", "name", "department", "profile_picture"]
 
     def get_name(self, obj):
         # Return full name if available, otherwise username
         user = obj.user
         full_name = f"{user.first_name} {user.last_name}".strip()
-        return {full_name or user.email}
+        return full_name or user.email

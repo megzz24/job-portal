@@ -33,7 +33,7 @@ class JobAdmin(admin.ModelAdmin):
         if obj.posted_by:
             user = obj.posted_by.user
             full_name = f"{user.first_name} {user.last_name}".strip()
-            return f"{full_name or user.email} ({obj.posted_by.role})"
+            return f"{full_name or user.email} ({obj.posted_by.department})"
         return "-"
 
     posted_by_name.short_description = "Posted By"

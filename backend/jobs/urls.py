@@ -12,4 +12,24 @@ urlpatterns = [
     path("<int:job_id>/unsave/", views.unsave_job, name="unsave-job"),
     path("saved/", views.saved_jobs_list, name="saved-jobs"),
     path("recommended/", views.recommended_jobs, name="recommended-jobs"),
+    path("company/jobs/", views.company_jobs, name="company-jobs"),
+    path(
+        "company/jobs/<int:job_id>/applicants/",
+        views.job_applicants,
+        name="job-applicants",
+    ),
+    path("jobpost/", views.create_job, name="job-post"),
+    path("company/jobs/<int:job_id>/close/", views.close_job, name="close-job"),
+    path("company/jobs/<int:job_id>/reopen/", views.reopen_job, name="reopen-job"),
+    path(
+        "applications/<int:application_id>/update-status/",
+        views.update_application_status,
+        name="update-application-status",
+    ),
+    path("company/jobs/<int:job_id>/delete/", views.delete_job, name="delete-job"),
+    path(
+        "company/jobs/<int:job_id>/update/",
+        views.JobUpdateView.as_view(),
+        name="job-update",
+    ),
 ]

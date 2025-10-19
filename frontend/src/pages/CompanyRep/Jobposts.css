@@ -16,6 +16,51 @@
   --sidenav-width: 280px;
 }
 
+.job-details-header {
+  margin-bottom: 1rem;
+}
+
+.close-job-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.close-job-btn.open {
+  background-color: #77fcea;
+  color: black;
+}
+
+.close-job-btn.closed {
+  background-color: #54e637; /* green for reopening */
+  color: white;
+}
+
+.job-actions {
+  display: flex;
+  gap: 16px; /* increased spacing between buttons */
+  align-items: center;
+  margin-top: 16px; /* space above actions */
+}
+
+.delete-job-btn {
+  background-color: red;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.delete-job-btn .material-symbols-outlined {
+  font-size: 20px;
+}
+
 body {
   margin: 0;
   font-family: "Work Sans", sans-serif;
@@ -300,17 +345,19 @@ body.sidenav-collapsed .main-content-wrapper {
 }
 
 .applicant-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background-color: var(--background-light);
+  position: relative; /* allow absolute positioning inside */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center the title */
+  padding: 1rem 2rem;
   border-bottom: 1px solid #e5e7eb;
+  background-color: var(--background-light);
 }
 
-.applicant-header-inner {
-  max-width: 80rem; /* container */
-  margin: 0 auto;
-  padding: 0 1rem;
+.applicant-header-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
 }
 
 .header-nav {
@@ -320,7 +367,24 @@ body.sidenav-collapsed .main-content-wrapper {
   padding: 1rem 0;
 }
 
+.applicant-table td {
+  vertical-align: top;
+  max-width: 200px; /* optional, for other cells */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.applicant-table tr:hover td.cover-letter-cell {
+  white-space: normal; /* allow wrapping */
+  overflow: visible;
+}
+
+
 .back-link {
+  position: absolute;
+  left: 2rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;

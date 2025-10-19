@@ -3,18 +3,13 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User, JobSeeker, Company, CompanyRepresentative
 from django.utils.html import format_html
+import json
+
 
 # Custom User Admin
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = (
-        "email",
-        "first_name",
-        "last_name",
-        "is_staff",
-        "is_active",
-        "user_type",
-    )
+    list_display = ("email", "first_name", "last_name", "is_staff", "is_active")
     list_filter = ("is_staff", "is_active")
     search_fields = ("email", "first_name", "last_name")
     ordering = ("email",)
@@ -53,7 +48,6 @@ class UserAdmin(BaseUserAdmin):
                     "password2",
                     "is_staff",
                     "is_active",
-                    "user_type",
                 ),
             },
         ),
@@ -79,12 +73,15 @@ class JobSeekerAdmin(admin.ModelAdmin):
         ("Profile Info", {"fields": ("field_name", "location", "about", "skills")}),
         ("Experience & Education", {"fields": ("experience", "education")}),
     )
-    
+
     def profile_preview(self, obj):
         if obj.profile_picture:
-            return format_html('<img src="{}" style="max-height: 100px;" />', obj.profile_picture.url)
+            return format_html(
+                '<img src="{}" style="max-height: 100px;" />', obj.profile_picture.url
+            )
         return "-"
-    profile_preview.short_description = 'Profile Picture Preview'
+
+    profile_preview.short_description = "Profile Picture Preview"
 
     # Display user's email
     def get_email(self, obj):
