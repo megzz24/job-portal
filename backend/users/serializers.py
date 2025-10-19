@@ -192,18 +192,43 @@ class CompanySerializer(serializers.ModelSerializer):
             "website",
             "location",
             "industry",
+            "company_size",
+            "founded_date", 
+            "email",
+            "phone_number",
+            "linkedin",
+            "logo",
         ]  # or list specific fields you want
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "first_name", "last_name", "email"]
 
 class CompanyRepresentativeSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    company = CompanySerializer(read_only=True)
+    user = UserSerializer(read_only=True)  # nested user object
 
     class Meta:
         model = CompanyRepresentative
-        fields = ["id", "name", "department", "profile_picture"]
+        fields = ["id", "name", "user", "department", "profile_picture", "company"]
 
     def get_name(self, obj):
         # Return full name if available, otherwise username
         user = obj.user
         full_name = f"{user.first_name} {user.last_name}".strip()
         return full_name or user.email
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop("user", {})
+        if "first_name" in user_data:
+            instance.user.first_name = user_data["first_name"]
+        if "last_name" in user_data:
+            instance.user.last_name = user_data["last_name"]
+        instance.user.save()
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance

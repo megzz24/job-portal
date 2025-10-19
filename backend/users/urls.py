@@ -1,12 +1,15 @@
 # users/urls.py
 from django.urls import path
 from .views import (
+    CompanyRepProfileView,
     JobSeekerRegisterView,
     CompanyRepRegisterView,
     CustomTokenObtainPairView,
     JobSeekerProfileView,
     JobSeekerAvatarUpdateView,
     JobSeekerResumeUploadView,
+    CompanyInfoView,
+    CompanyUpdateView,
 )
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -27,5 +30,15 @@ urlpatterns = [
     path("profile/avatar/", JobSeekerAvatarUpdateView.as_view(), name="update-avatar"),
     path(
         "profile/resume/", JobSeekerResumeUploadView.as_view(), name="jobseeker-resume"
+    ),
+    path("company/info/", CompanyInfoView.as_view(), name="company-info"),
+    path("company/update/", CompanyUpdateView.as_view(), name="company-update"),
+    path(
+        "companyrep/profile/",
+        CompanyRepProfileView.as_view(),
+        name="companyrep-profile",
+    ),
+    path(
+        "companyrep/update/", CompanyRepProfileView.as_view(), name="companyrep-update"
     ),
 ]

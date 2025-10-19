@@ -1,14 +1,16 @@
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status, permissions, serializers
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import (
+    CompanyRepresentativeSerializer,
     JobSeekerRegistrationSerializer,
     CompanyRepRegistrationSerializer,
     JobSeekerSerializer,
     CustomTokenObtainPairSerializer,
+    CompanySerializer,
 )
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import JobSeeker
+from .models import JobSeeker, Company, CompanyRepresentative
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
@@ -128,3 +130,43 @@ class JobSeekerResumeUploadView(generics.UpdateAPIView):
             profile.save()
         # return only resume field so other fields aren’t touched
         return Response({"resume": profile.resume.url})
+
+
+# users/views.py
+class CompanyInfoView(generics.RetrieveAPIView):
+    serializer_class = CompanySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        try:
+            return self.request.user.companyrep_profile.company
+        except AttributeError:
+            raise serializers.ValidationError(
+                "Logged-in user is not a company representative."
+            )
+
+
+class CompanyUpdateView(generics.UpdateAPIView):
+    serializer_class = CompanySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        try:
+            return self.request.user.companyrep_profile.company
+        except AttributeError:
+            raise serializers.ValidationError(
+                "Logged-in user is not a company representative."
+            )
+
+class CompanyRepProfileView(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        try:
+            return self.request.user.companyrep_profile
+        except AttributeError:
+            raise serializers.ValidationError(
+                "Logged-in user is not a company representative."
+            )
+
+    serializer_class = CompanyRepresentativeSerializer

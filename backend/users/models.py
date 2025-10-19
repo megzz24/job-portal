@@ -95,6 +95,13 @@ class Company(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
+    company_size = models.CharField(max_length=50, blank=True, null=True)
+    founded_date = models.DateField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    linkedin = models.URLField(blank=True, null=True)
+    logo = models.ImageField(upload_to="company_logos/", blank=True, null=True)
+
     def __str__(self):
         return self.name
 

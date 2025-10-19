@@ -66,7 +66,7 @@ class Application(models.Model):
     cover_letter = models.TextField(blank=True, null=True)
     applied_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    resume = models.FileField(upload_to='resumes/')
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     
     class Meta:
         ordering = ['-applied_at']
