@@ -4,6 +4,15 @@ import JobSeekerSideNav from "../../components/JobSeekerSideNav";
 import Modal from "../../components/Modal";
 import ApplyForm from "../../components/ApplyForm";
 import apiClient from "../../apiClient";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import LanguageIcon from "@mui/icons-material/Language";
+import WorkIcon from "@mui/icons-material/Work";
+import DescriptionIcon from "@mui/icons-material/Description";
+import PeopleIcon from "@mui/icons-material/People";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import EmailIcon from "@mui/icons-material/Email";
+import PhoneIcon from "@mui/icons-material/Phone";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
 // --- SVG Icons ---
 const SearchIcon = ({ className = "w-6 h-6" }) => (
@@ -209,6 +218,11 @@ export default function CareerConnect() {
   const openApply = () => setIsApplyOpen(true);
   const closeApply = () => setIsApplyOpen(false);
 
+  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
+
+  const openCompanyModal = () => setIsCompanyModalOpen(true);
+  const closeCompanyModal = () => setIsCompanyModalOpen(false);
+
   const onApplySuccess = (data) => console.log("Application submitted", data);
 
   const handleSaveJob = (jobId) => {
@@ -233,9 +247,7 @@ export default function CareerConnect() {
       .get("users/profile/")
       .then((res) => {
         if (res.data.resume) {
-          setResumeUrl(
-            `${res.data.resume}`
-          );
+          setResumeUrl(`${res.data.resume}`);
         }
       })
       .catch((err) => console.error("Failed to fetch resume:", err));
@@ -516,6 +528,12 @@ export default function CareerConnect() {
                     <h2 className="mt-4 text-2xl font-bold">
                       {selectedJob.title}
                     </h2>
+                    <button
+                      onClick={openCompanyModal}
+                      className="mt-2 text-sm text-blue-500 hover:underline"
+                    >
+                      {selectedJob.company.name}
+                    </button>
                   </div>
 
                   <div className="flex justify-center gap-3">
@@ -578,239 +596,6 @@ export default function CareerConnect() {
                       }
                     />
                   </div>
-
-                  <hr className="my-4 border-gray-200" />
-
-                  {/* Company Details Items */}
-                  <div className="space-y-4 text-sm">
-                    {/* Company Name */}
-                    <h3 className="text-xl font-bold text-center">
-                      {selectedJob.company.name}
-                    </h3>
-
-                    {/* Location */}
-                    {selectedJob.company.location && (
-                      <DetailItem
-                        icon={
-                          <LocationPinIcon className="h-5 w-5 text-gray-500 mt-0.5" />
-                        }
-                        label="Location"
-                        value={selectedJob.company.location}
-                      />
-                    )}
-
-                    {/* Website */}
-                    {selectedJob.company.website && (
-                      <DetailItem
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-500 mt-0.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M12 4.5v15m7.5-7.5h-15"
-                            />
-                          </svg>
-                        }
-                        label="Website"
-                        value={
-                          <a
-                            href={selectedJob.company.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:underline"
-                          >
-                            {selectedJob.company.website}
-                          </a>
-                        }
-                      />
-                    )}
-
-                    {/* Industry */}
-                    {selectedJob.company.industry && (
-                      <DetailItem
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-700 mt-0.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3 21V8l7-5 7 5v13M14 21v-7H10v7"
-                            />
-                          </svg>
-                        }
-                        label="Industry"
-                        value={selectedJob.company.industry}
-                      />
-                    )}
-
-                    {/* Description */}
-                    {selectedJob.company.description && (
-                      <DetailItem
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-600 mt-0.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3 5h18M3 10h18M3 15h18M3 20h18"
-                            />
-                          </svg>
-                        }
-                        label="Description"
-                        value={selectedJob.company.description}
-                      />
-                    )}
-
-                    {/* Company Size */}
-                    {selectedJob.company.company_size && (
-                      <DetailItem
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-700 mt-0.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M12 6v6l4 2"
-                            />
-                          </svg>
-                        }
-                        label="Company Size"
-                        value={selectedJob.company.company_size}
-                      />
-                    )}
-
-                    {/* Founded Date */}
-                    {selectedJob.company.founded_date && (
-                      <DetailItem
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-700 mt-0.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M12 4v4l3 3-3 3v4"
-                            />
-                          </svg>
-                        }
-                        label="Founded"
-                        value={new Date(
-                          selectedJob.company.founded_date
-                        ).getFullYear()}
-                      />
-                    )}
-
-                    {/* Email */}
-                    {selectedJob.company.email && (
-                      <DetailItem
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-700 mt-0.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M16 12H8m0 0l4-4m0 8l-4-4"
-                            />
-                          </svg>
-                        }
-                        label="Email"
-                        value={selectedJob.company.email}
-                      />
-                    )}
-
-                    {/* Phone */}
-                    {selectedJob.company.phone_number && (
-                      <DetailItem
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-700 mt-0.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M3 5h2l2 7-2 7h-2l2-7-2-7z"
-                            />
-                          </svg>
-                        }
-                        label="Phone"
-                        value={selectedJob.company.phone_number}
-                      />
-                    )}
-
-                    {/* LinkedIn */}
-                    {selectedJob.company.linkedin && (
-                      <DetailItem
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-700 mt-0.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M16 8a6 6 0 016 6v6h-4v-6a2 2 0 00-4 0v6h-4v-6a6 6 0 016-6z"
-                            />
-                          </svg>
-                        }
-                        label="LinkedIn"
-                        value={
-                          <a
-                            href={selectedJob.company.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:underline"
-                          >
-                            {selectedJob.company.linkedin}
-                          </a>
-                        }
-                      />
-                    )}
-                  </div>
                 </div>
               </div>
             )}
@@ -826,6 +611,116 @@ export default function CareerConnect() {
           onSuccess={onApplySuccess}
           resumeUrl={resumeUrl} // ✅ auto-filled resume
         />
+      </Modal>
+
+      <Modal isOpen={isCompanyModalOpen} onClose={closeCompanyModal}>
+        <div className="rounded-2xl bg-white p-6 shadow-sm space-y-6 max-w-lg mx-auto">
+          {/* Company Name */}
+          <h3 className="text-xl font-bold text-center">
+            {selectedJob.company.name}
+          </h3>
+
+          {/* Location */}
+          <DetailItem
+            icon={<LocationOnIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+            label="Location"
+            value={selectedJob.company.location || "N/A"}
+          />
+
+          {/* Website */}
+          {selectedJob.company.website && (
+            <DetailItem
+              icon={<LanguageIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+              label="Website"
+              value={
+                <a
+                  href={selectedJob.company.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  {selectedJob.company.website}
+                </a>
+              }
+            />
+          )}
+
+          {/* Industry */}
+          {selectedJob.company.industry && (
+            <DetailItem
+              icon={<WorkIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+              label="Industry"
+              value={selectedJob.company.industry}
+            />
+          )}
+
+          {/* Description */}
+          {selectedJob.company.description && (
+            <DetailItem
+              icon={
+                <DescriptionIcon className="h-5 w-5 text-gray-500 mt-0.5" />
+              }
+              label="Description"
+              value={selectedJob.company.description}
+            />
+          )}
+
+          {/* Company Size */}
+          {selectedJob.company.company_size && (
+            <DetailItem
+              icon={<PeopleIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+              label="Company Size"
+              value={selectedJob.company.company_size}
+            />
+          )}
+
+          {/* Founded Date */}
+          <DetailItem
+            icon={
+              <CalendarTodayIcon className="h-5 w-5 text-gray-500 mt-0.5" />
+            }
+            label="Founded"
+            value={
+              selectedJob.company.founded_date
+                ? new Date(selectedJob.company.founded_date).getFullYear()
+                : "N/A"
+            }
+          />
+
+          {/* Email */}
+          <DetailItem
+            icon={<EmailIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+            label="Email"
+            value={selectedJob.company.email || "N/A"}
+          />
+
+          {/* Phone */}
+          <DetailItem
+            icon={<PhoneIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+            label="Phone"
+            value={selectedJob.company.phone_number || "N/A"}
+          />
+
+          {/* LinkedIn */}
+          <DetailItem
+            icon={<LinkedInIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+            label="LinkedIn"
+            value={
+              selectedJob.company.linkedin ? (
+                <a
+                  href={selectedJob.company.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  {selectedJob.company.linkedin}
+                </a>
+              ) : (
+                "N/A"
+              )
+            }
+          />
+        </div>
       </Modal>
     </div>
   );
