@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import apiClient from "../apiClient";
 import toast from "react-hot-toast";
 
-export default function ApplyForm({ jobId, onClose, onSuccess }) {
+export default function ApplyForm({ jobId, onClose, onSuccess, resumeUrl }) {
   const [coverLetter, setCoverLetter] = useState("");
-  const [resume, setResume] = useState(null);
+  const [resume, setResume] = useState(null); // can be File or URL string
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (resumeUrl) {
+      setResume(resumeUrl); // preload saved resume URL
+    }
+  }, [resumeUrl]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file type
       const allowedTypes = [
         "application/pdf",
         "application/msword",
@@ -22,16 +27,14 @@ export default function ApplyForm({ jobId, onClose, onSuccess }) {
         setResume(null);
         return;
       }
-
-      // Validate file size (<5MB)
       if (file.size > 5 * 1024 * 1024) {
         setError("File size must be under 5MB.");
         setResume(null);
         return;
       }
+      setResume(file); // new file replaces old resume
+      setError("");
     }
-    setResume(file || null);
-    setError("");
   };
 
   const handleSubmit = async (e) => {
@@ -45,7 +48,14 @@ export default function ApplyForm({ jobId, onClose, onSuccess }) {
     try {
       const formData = new FormData();
       formData.append("cover_letter", coverLetter);
-      formData.append("resume", resume);
+
+      if (resume instanceof File) {
+        // user uploaded a new file
+        formData.append("resume", resume);
+      } else {
+        // resume is URL string from profile
+        formData.append("resume_url", resume);
+      }
 
       const res = await apiClient.post(`/jobs/${jobId}/apply/`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -55,12 +65,17 @@ export default function ApplyForm({ jobId, onClose, onSuccess }) {
         onSuccess?.(res.data);
         onClose();
         toast.success("Application submitted successfully!");
-      } else {
-        setError("Failed to submit application.");
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.detail || "Application failed.");
+      const backendError =
+        err.response?.data?.error || err.response?.data?.detail;
+      if (backendError === "Already applied") {
+        setError("You have already applied for this job.");
+        toast.error("You have already applied for this job.");
+      } else {
+        setError(backendError || "Application failed.");
+      }
     } finally {
       setLoading(false);
     }
@@ -95,6 +110,22 @@ export default function ApplyForm({ jobId, onClose, onSuccess }) {
             <label className="block text-sm font-semibold text-gray-700 mb-1">
               Resume (PDF or DOC/DOCX)
             </label>
+
+            {/* Show stored resume */}
+            {typeof resume === "string" && (
+              <p className="text-sm text-gray-600 mb-2">
+                Using your saved resume:{" "}
+                <a
+                  href={resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  View Resume
+                </a>
+              </p>
+            )}
+
             <input
               type="file"
               accept=".pdf,.doc,.docx"

@@ -86,7 +86,7 @@ export default function Applications() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const response = await apiClient.get("jobs/applications/"); // backend endpoint
+        const response = await apiClient.get("jobs/jobseeker/applications/"); // backend endpoint
         setApplications(response.data);
       } catch (error) {
         console.error("Failed to fetch applications:", error);

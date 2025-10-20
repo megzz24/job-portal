@@ -73,22 +73,10 @@ class JobSeekerProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = JobSeekerSerializer
 
     def get_object(self):
-        # Returns the JobSeeker linked to the logged-in user
-        return self.request.user.jobseeker_profile
-
-    def get(self, request):
-        profile = request.user.jobseeker_profile
-        serializer = JobSeekerSerializer(profile)
-        return Response(serializer.data)
-
-    def put(self, request):
-        profile = request.user.jobseeker_profile
-        serializer = JobSeekerSerializer(profile, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=400)
-
+        profile = getattr(self.request.user, "jobseeker_profile", None)
+        if profile is None:
+            raise serializers.ValidationError("JobSeeker profile not found")
+        return profile
 
 class JobSeekerAvatarUpdateView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -157,6 +145,7 @@ class CompanyUpdateView(generics.UpdateAPIView):
             raise serializers.ValidationError(
                 "Logged-in user is not a company representative."
             )
+
 
 class CompanyRepProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]

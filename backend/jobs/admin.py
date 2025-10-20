@@ -39,7 +39,6 @@ class JobAdmin(admin.ModelAdmin):
     posted_by_name.short_description = "Posted By"
 
 
-
 # Application admin
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):

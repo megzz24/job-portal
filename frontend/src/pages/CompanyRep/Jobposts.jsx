@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import "./Jobposts.css";
 import Modal from "../../components/Modal";
 import JobPostForm from "../../components/JobPostForm";
@@ -276,7 +277,7 @@ const ApplicantList = ({ job, onBack, updateJobStatus, removeJob }) => {
                         >
                           <button className="resume-btn">Resume</button>
                         </a>
-                      )} 
+                      )}
                     </td>
                     <td className="cover-letter-cell">
                       {applicant.cover_letter || "N/A"}
@@ -311,6 +312,26 @@ export default function Jobposts() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { jobId } = useParams();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.openNewJobModal) {
+      setIsModalOpen(true);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  useEffect(() => {
+    if (jobId && jobs.length) {
+      const job = jobs.find((j) => j.id.toString() === jobId.toString());
+      if (job) setSelectedJob(job);
+    }
+  }, [jobId, jobs]);
 
   useEffect(() => {
     fetchJobs();

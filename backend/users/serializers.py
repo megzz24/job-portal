@@ -118,8 +118,12 @@ class JobSeekerSerializer(serializers.ModelSerializer):
         queryset=Skill.objects.all(), many=True, required=False
     )
     skill_names = serializers.SerializerMethodField()
-    first_name = serializers.CharField(source="user.first_name", required=False)
-    last_name = serializers.CharField(source="user.last_name", required=False)
+    first_name = serializers.CharField(
+        source="user.first_name", required=False, allow_blank=True, allow_null=True
+    )
+    last_name = serializers.CharField(
+        source="user.last_name", required=False, allow_bwlank=True, allow_null=True
+    )
     email = serializers.EmailField(source="user.email", read_only=True)
 
     saved_jobs = serializers.PrimaryKeyRelatedField(
@@ -143,43 +147,38 @@ class JobSeekerSerializer(serializers.ModelSerializer):
             "education",
             "skills",
             "skill_names",
-            "saved_jobs",  # ✅ add this
-            "saved_job_titles",  # ✅ add this
+            "saved_jobs",
+            "saved_job_titles",
         ]
         read_only_fields = ("user",)
 
-    def update(self, instance, validated_data):
-        # Update user fields
-        first_name = validated_data.pop("first_name", None)
-        last_name = validated_data.pop("last_name", None)
-        if first_name is not None:
-            instance.user.first_name = first_name
-        if last_name is not None:
-            instance.user.last_name = last_name
-        instance.user.save()
-
-        # Update skills
-        skills_data = validated_data.pop("skills", None)
-        if skills_data is not None:
-            instance.skills.set(skills_data)
-
-        # Update saved jobs
-        saved_jobs_data = validated_data.pop("saved_jobs", None)
-        if saved_jobs_data is not None:
-            instance.saved_jobs.set(saved_jobs_data)
-
-        # Update other fields
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-
-        return instance
-
-    def get_skill_names(self, obj):  # 👈 must match the field name
+    def get_skill_names(self, obj):
         return [skill.name for skill in obj.skills.all()]
 
     def get_saved_job_titles(self, obj):
         return [job.title for job in obj.saved_jobs.all()]
+
+    def update(self, instance, validated_data):
+        # Update nested user fields safely
+        user_data = validated_data.pop("user", {})
+        user = instance.user
+        user.first_name = user_data.get("first_name", user.first_name)
+        user.last_name = user_data.get("last_name", user.last_name)
+        user.save()
+
+        # Update JobSeeker fields
+        skills_data = validated_data.pop("skills", None)
+        if skills_data is not None:
+            instance.skills.set(skills_data)
+
+        saved_jobs_data = validated_data.pop("saved_jobs", None)
+        if saved_jobs_data is not None:
+            instance.saved_jobs.set(saved_jobs_data)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -193,17 +192,19 @@ class CompanySerializer(serializers.ModelSerializer):
             "location",
             "industry",
             "company_size",
-            "founded_date", 
+            "founded_date",
             "email",
             "phone_number",
             "linkedin",
             "logo",
         ]  # or list specific fields you want
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "email"]
+
 
 class CompanyRepresentativeSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()

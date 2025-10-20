@@ -1,5 +1,5 @@
-import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -11,6 +11,11 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import CompanyRepSideNav from "../../components/CompanyRepSideNav";
+import apiClient from "../../apiClient";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import CancelIcon from "@mui/icons-material/Cancel";
 import "./Applications.css";
 
 const modernTheme = createTheme({
@@ -21,67 +26,84 @@ const modernTheme = createTheme({
   },
 });
 
+// StatusBadge Component
 const StatusBadge = ({ status }) => {
-  const color =
-    status === "Interview"
-      ? "#10B981"
-      : status === "Under Review"
-      ? "#B57E00"
-      : "#C42323";
+  const getStatusConfig = () => {
+    const statusKey = status?.toLowerCase().replace(" ", "-");
+    switch (statusKey) {
+      case "interview":
+        return { bg: "#E6F7F0", color: "#0D824B", icon: CheckCircleIcon };
+      case "review":
+      case "under-review":
+        return { bg: "#FFF8E6", color: "#B57E00", icon: HourglassTopIcon };
+      case "accepted":
+      case "offer":
+        return { bg: "#E0E7FF", color: "#6366F1", icon: EmojiEventsIcon };
+      case "rejected":
+        return { bg: "#FDEBEB", color: "#C42323", icon: CancelIcon };
+      default:
+        return { bg: "#F3F4F6", color: "#6B7280", icon: HourglassTopIcon };
+    }
+  };
+
+  const config = getStatusConfig();
+  const Icon = config.icon;
+
   return (
-    <span className="status-badge" style={{ background: "#F3F4F6", color }}>
+    <span
+      className="status-badge"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "0.25rem",
+        backgroundColor: config.bg,
+        color: config.color,
+        padding: "0.2rem 0.6rem",
+        borderRadius: "0.25rem",
+        fontWeight: 500,
+      }}
+    >
+      <Icon fontSize="small" />
       {status}
     </span>
   );
 };
 
-const applicationsData = [
-  {
-    id: 1,
-    title: "Software Engineer",
-    company: "Tech Innovators Inc.",
-    date: "2024-07-15",
-    status: "Interview",
-  },
-  {
-    id: 2,
-    title: "Data Analyst",
-    company: "Global Solutions Ltd.",
-    date: "2024-07-20",
-    status: "Under Review",
-  },
-  {
-    id: 3,
-    title: "UX Designer",
-    company: "Creative Minds Corp.",
-    date: "2024-07-25",
-    status: "Rejected",
-  },
-  {
-    id: 4,
-    title: "Frontend Engineer",
-    company: "Bright Apps LLC",
-    date: "2024-08-01",
-    status: "Under Review",
-  },
-  {
-    id: 5,
-    title: "Backend Engineer",
-    company: "ServerWorks",
-    date: "2024-08-05",
-    status: "Interview",
-  },
-  {
-    id: 6,
-    title: "Product Designer",
-    company: "Design Studio",
-    date: "2024-08-10",
-    status: "Rejected",
-  },
-  // Additional mock rows to illustrate "view all"
-];
-
 export default function Applications() {
+  const [applicationsData, setApplicationsData] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const res = await apiClient.get("/jobs/applications/");
+        const apps = res.data;
+
+        // Transform data for table display
+        const formattedApps = apps.map((app) => ({
+          id: app.id,
+          jobId: app.job?.id, // ✅ needed for navigation
+          jobTitle: app.job?.title || "N/A",
+          jobStatus: app.job?.is_open ? "Open" : "Closed",
+          name:
+            app.jobseeker?.first_name || app.jobseeker?.last_name
+              ? `${app.jobseeker.first_name || ""} ${
+                  app.jobseeker.last_name || ""
+                }`.trim()
+              : "N/A",
+          dateApplied: new Date(app.applied_at).toLocaleDateString(),
+          status: app.status,
+        }));
+
+        setApplicationsData(formattedApps);
+      } catch (err) {
+        console.error("Failed to fetch applications:", err);
+      }
+    };
+
+    fetchApplications();
+  }, []);
+
   return (
     <ThemeProvider theme={modernTheme}>
       <CssBaseline />
@@ -106,28 +128,59 @@ export default function Applications() {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 600 }}>JOB TITLE</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>COMPANY</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>DATE APPLIED</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>
+                      APPLICANT NAME
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>
+                      DATE APPLIED
+                    </TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>STATUS</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {applicationsData.map((row) => (
-                    <TableRow key={row.id}>
-                      <TableCell
-                        component="th"
-                        scope="row"
-                        sx={{ fontWeight: 500 }}
+                  {applicationsData.length > 0 ? (
+                    applicationsData.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        hover
+                        sx={{ cursor: "pointer" }}
+                        onClick={() =>
+                          navigate(`/companyrep/jobposts/${row.jobId}/applicants`)
+                        }
                       >
-                        {row.title}
-                      </TableCell>
-                      <TableCell>{row.company}</TableCell>
-                      <TableCell>{row.date}</TableCell>
-                      <TableCell>
-                        <StatusBadge status={row.status} />
+                        <TableCell
+                          component="th"
+                          scope="row"
+                          sx={{ fontWeight: 500 }}
+                        >
+                          {row.jobTitle}{" "}
+                          <span
+                            style={{
+                              color:
+                                row.jobStatus === "Open" ? "#16A34A" : "#DC2626",
+                              fontWeight: 600,
+                            }}
+                          >
+                            ({row.jobStatus})
+                          </span>
+                        </TableCell>
+                        <TableCell>{row.name}</TableCell>
+                        <TableCell>{row.dateApplied}</TableCell>
+                        <TableCell>
+                          <StatusBadge status={row.status} />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={4}
+                        style={{ textAlign: "center", padding: "1rem" }}
+                      >
+                        No applications yet.
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

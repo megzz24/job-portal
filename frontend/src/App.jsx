@@ -42,6 +42,10 @@ function App() {
         <Route path="/companyrep/dashboard" element={<CompanyRepDashboard />} />
         <Route path="/companyrep/profile" element={<CompanyRepProfile />} />
         <Route path="/companyrep/settings" element={<CompanyRepSettings />} />
+        <Route
+          path="/companyrep/jobposts/:jobId/applicants"
+          element={<Jobposts />}
+        />
       </Routes>
     </>
   );

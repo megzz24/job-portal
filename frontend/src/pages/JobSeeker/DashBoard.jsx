@@ -98,8 +98,8 @@ export default function JobSeekerDashboard() {
     const fetchDashboardData = async () => {
       try {
         const [summaryRes, applicationsRes] = await Promise.all([
-          apiClient.get("jobs/summary/"),
-          apiClient.get("jobs/applications/"),
+          apiClient.get("jobs/jobseeker/summary/"),
+          apiClient.get("jobs/jobseeker/applications/"),
         ]);
         setSummary(summaryRes.data);
         setApplications(applicationsRes.data);

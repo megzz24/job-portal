@@ -12,7 +12,7 @@ from django.db.models import Case, When, Value, IntegerField, Q
 
 
 @api_view(["GET"])
-def dashboard_summary(request):
+def jobseeker_dashboard_summary(request):
     user = request.user
 
     if not hasattr(user, "jobseeker_profile"):
@@ -33,7 +33,7 @@ def dashboard_summary(request):
 
 
 @api_view(["GET"])
-def applications_list(request):
+def jobseeker_applications_list(request):
     jobseeker = request.user.jobseeker_profile
     applications = Application.objects.filter(jobseeker=jobseeker).order_by(
         "-applied_at"
@@ -448,3 +448,51 @@ class JobUpdateView(APIView):
             return Response(JobSerializer(job).data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def dashboard_summary(request):
+    try:
+        company = request.user.companyrep_profile.company
+    except AttributeError:
+        return Response({"error": "User is not a company representative"}, status=403)
+
+    # 1. Total number of jobs
+    total_jobs = Job.objects.filter(company=company).count()
+
+    # 2. Active listings (open jobs only)
+    active_listings = Job.objects.filter(company=company, is_open=True).count()
+
+    # 3. Total number of applications
+    total_applications = Application.objects.filter(job__company=company).count()
+
+    # 4. Total number of hires (applications accepted)
+    total_hires = Application.objects.filter(
+        job__company=company, status="accepted"
+    ).count()
+
+    return Response(
+        {
+            "total_jobs": total_jobs,
+            "active_listings": active_listings,
+            "total_applications": total_applications,
+            "total_hires": total_hires,
+        }
+    )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def applications_list(request):
+    try:
+        company = request.user.companyrep_profile.company
+    except AttributeError:
+        return Response({"error": "User is not a company representative"}, status=403)
+
+    # All applications across jobs from this company
+    applications = Application.objects.filter(job__company=company).select_related(
+        "job", "jobseeker__user"
+    )
+
+    serializer = ApplicationSerializer(applications, many=True)
+    return Response(serializer.data)

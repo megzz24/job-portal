@@ -13,7 +13,6 @@ import {
   Avatar,
   Stack,
   Chip,
-  IconButton,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import WorkIcon from "@mui/icons-material/Work";
@@ -27,7 +26,12 @@ const theme = createTheme({
 });
 
 export default function JobSeekerProfile() {
-  const [profile, setProfile] = useState({ skills: [], skills_names: [] });
+  const [profile, setProfile] = useState({
+    skills: [],
+    skill_names: [],
+    experience: [],
+    education: [],
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const API_BASE_URL = "http://127.0.0.1:8000";
@@ -35,34 +39,55 @@ export default function JobSeekerProfile() {
   useEffect(() => {
     apiClient
       .get("users/profile/")
-      .then((res) => setProfile(res.data))
+      .then((res) => {
+        const data = res.data;
+        setProfile({
+          ...data,
+          first_name: Array.isArray(data.first_name)
+            ? data.first_name[0] || ""
+            : data.first_name || "",
+          last_name: Array.isArray(data.last_name)
+            ? data.last_name[0] || ""
+            : data.last_name || "",
+          skills: data.skills || [],
+          skill_names: data.skill_names || [],
+          experience: data.experience || [],
+          education: data.education || [],
+        });
+      })
       .catch((err) => console.error(err));
   }, []);
 
   const handleSave = () => {
     const updatePayload = {
-      first_name: profile.first_name,
-      last_name: profile.last_name,
-      field_name: profile.field_name,
-      location: profile.location,
-      about: profile.about,
-      experience: profile.experience,
-      education: profile.education,
-      skills: profile.skills.map((s) => s.id ?? s),
+      first_name: profile.first_name?.trim() || "",
+      last_name: profile.last_name?.trim() || "",
+      field_name: profile.field_name?.trim() || "",
+      location: profile.location?.trim() || "",
+      about: profile.about?.trim() || "",
+      experience: profile.experience || [],
+      education: profile.education || [],
+      skills: profile.skills || [],
     };
 
     apiClient
       .patch("users/profile/", updatePayload)
       .then((res) => {
-        setProfile(res.data);
+        setProfile({
+          ...res.data,
+          first_name: res.data.first_name || "",
+          last_name: res.data.last_name || "",
+          skills: res.data.skills || [],
+          skill_names: res.data.skill_names || [],
+          experience: res.data.experience || [],
+          education: res.data.education || [],
+        });
         setIsEditing(false);
       })
-      .catch((err) => {
-        console.error("Save error:", err.response?.data || err.message);
-      });
+      .catch((err) =>
+        console.error("Save error:", err.response?.data || err.message)
+      );
   };
-
-  if (!profile) return <div>Loading...</div>;
 
   const handleAvatarUpload = async (file) => {
     try {
@@ -90,12 +115,13 @@ export default function JobSeekerProfile() {
       const res = await apiClient.patch("users/profile/resume/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      // only update resume, don’t overwrite full profile
       setProfile((prev) => ({ ...prev, resume: res.data.resume }));
     } catch (err) {
       console.error(err);
     }
   };
+
+  if (!profile) return <div>Loading...</div>;
 
   return (
     <ThemeProvider theme={theme}>
@@ -117,7 +143,7 @@ export default function JobSeekerProfile() {
                     <Avatar
                       src={
                         profile.profile_picture
-                          ? `${API_BASE_URL}${profile.profile_picture}`
+                          ? `${profile.profile_picture}`
                           : ""
                       }
                       sx={{ width: 120, height: 120, mb: 2, mx: "auto" }}
@@ -156,10 +182,8 @@ export default function JobSeekerProfile() {
                     )}
                   </Box>
 
-                  {/* Name, Field, Location */}
                   {isEditing ? (
                     <Stack spacing={1} sx={{ alignItems: "center", mt: 1 }}>
-                      {/* Row 1: First + Last Name */}
                       <Stack
                         direction="row"
                         spacing={1}
@@ -191,7 +215,6 @@ export default function JobSeekerProfile() {
                         />
                       </Stack>
 
-                      {/* Row 2: Field */}
                       <TextField
                         fullWidth
                         size="small"
@@ -203,7 +226,6 @@ export default function JobSeekerProfile() {
                         sx={{ maxWidth: 300 }}
                       />
 
-                      {/* Row 3: Location */}
                       <TextField
                         fullWidth
                         size="small"
@@ -229,7 +251,6 @@ export default function JobSeekerProfile() {
                     </>
                   )}
 
-                  {/* Edit Button */}
                   <Button
                     variant="outlined"
                     startIcon={<EditIcon />}
@@ -244,12 +265,11 @@ export default function JobSeekerProfile() {
               {/* Right Column */}
               <Grid item xs={12} md={8}>
                 <Stack spacing={4}>
-                  {/* Resume Section */}
+                  {/* Resume */}
                   <Paper elevation={0} sx={{ p: 2 }}>
                     <Typography variant="h6" sx={{ mb: 2 }}>
                       Resume
                     </Typography>
-
                     {profile.resume ? (
                       <Typography
                         variant="body2"
@@ -258,7 +278,7 @@ export default function JobSeekerProfile() {
                       >
                         Current Resume:{" "}
                         <a
-                          href={`${API_BASE_URL}${profile.resume}`}
+                          href={`${profile.resume}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -422,7 +442,6 @@ export default function JobSeekerProfile() {
                   </Paper>
 
                   {/* Education */}
-                  {/* Education Section */}
                   <Paper elevation={0} sx={{ p: 2 }}>
                     <Box
                       sx={{
@@ -548,18 +567,17 @@ export default function JobSeekerProfile() {
                               try {
                                 const res = await apiClient.post(
                                   "jobs/skills/",
-                                  { name: skillName }
+                                  {
+                                    name: skillName,
+                                  }
                                 );
                                 const newSkill = res.data; // { id, name }
 
                                 setProfile({
                                   ...profile,
-                                  skills: [
-                                    ...(profile.skills || []),
-                                    newSkill.id,
-                                  ],
+                                  skills: [...profile.skills, newSkill.id],
                                   skill_names: [
-                                    ...(profile.skill_names || []),
+                                    ...profile.skill_names,
                                     newSkill.name,
                                   ],
                                 });
@@ -591,7 +609,6 @@ export default function JobSeekerProfile() {
                                     profile.skill_names.filter(
                                       (_, i) => i !== idx
                                     );
-
                                   setProfile({
                                     ...profile,
                                     skills: updatedIds,
@@ -606,7 +623,6 @@ export default function JobSeekerProfile() {
                     </Box>
                   </Paper>
 
-                  {/* Save Button */}
                   {isEditing && (
                     <Button variant="contained" onClick={handleSave}>
                       Save Profile
