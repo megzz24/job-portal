@@ -1,7 +1,7 @@
 // src/components/SignIn.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import wallpaper from "../assets/corporate.avif";
+import wallpaper from "../assets/Ppt Background.jpg";
 
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineLock } from "react-icons/md";

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import wallpaper from "../assets/cityscape.jpg"; // background image
+import wallpaper from "../assets/Ppt Background.jpg"; // background image
 import "./Landing.css";
 
 const Landing = () => {

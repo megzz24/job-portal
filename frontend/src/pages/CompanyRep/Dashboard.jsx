@@ -77,7 +77,7 @@ export default function CompanyRepDashboard() {
             value: summary.active_listings,
             highlight: true,
           },
-          { label: "Total Applicants", value: summary.total_applications },
+          { label: "Total Applications", value: summary.total_applications },
           { label: "Hires", value: summary.total_hires, highlight: true },
         ]);
 

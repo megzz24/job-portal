@@ -122,7 +122,7 @@ class JobSeekerSerializer(serializers.ModelSerializer):
         source="user.first_name", required=False, allow_blank=True, allow_null=True
     )
     last_name = serializers.CharField(
-        source="user.last_name", required=False, allow_bwlank=True, allow_null=True
+        source="user.last_name", required=False, allow_blank=True, allow_null=True
     )
     email = serializers.EmailField(source="user.email", read_only=True)
 
