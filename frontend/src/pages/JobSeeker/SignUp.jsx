@@ -23,11 +23,15 @@ const JobSeekerSignUp = () => {
     setError("");
 
     try {
-      const response = await apiClient.post("/users/jobseeker/register/", {
-        email: formData.email, // assuming backend uses email as username
-        password: formData.password,
-        role: "jobseeker",
-      });
+      const response = await apiClient.post(
+        "/users/jobseeker/register/",
+        {
+          email: formData.email, // assuming backend uses email as username
+          password: formData.password,
+          role: "jobseeker",
+        },
+        { skipAuth: true }
+      );
 
       // Save JWT tokens in localStorage
       localStorage.setItem("access_token", response.data.access);

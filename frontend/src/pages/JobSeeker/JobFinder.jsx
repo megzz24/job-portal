@@ -440,74 +440,80 @@ export default function CareerConnect() {
 
               {/* Job List */}
               <div className="space-y-3">
-                {filteredJobs.map((job) => (
-                  <div
-                    key={job.id}
-                    onClick={() => handleJobClick(job)}
-                    className={`flex cursor-pointer flex-col gap-2 rounded-xl border p-4 transition-all duration-200 ${
-                      selectedJob?.id === job.id
-                        ? "border-blue-500 bg-white shadow-md"
-                        : "border-transparent bg-white hover:shadow-md"
-                    }`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="h-16 w-16 rounded-full bg-cyan-200 flex items-center justify-center text-cyan-500 font-bold text-2xl">
-                        {job.company.name?.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-900">{job.title}</h3>
-                        <p className="text-sm text-gray-600">
-                          {job.company.name}
-                        </p>
-                        <p className="mt-1 text-xs text-gray-400">
-                          {new Date(job.posted_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* --- Tags Section --- */}
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {/* Remote Status */}
-                      {job.remote_status && (
-                        <span className="px-2 py-1 rounded-full text-xs bg-lime-100 text-gray-700">
-                          {job.remote_status.toLowerCase() === "yes"
-                            ? "Remote"
-                            : "Onsite"}
-                        </span>
-                      )}
-
-                      {/* Job Type */}
-                      {job.job_type && (
-                        <span className="bg-orange-100 text-gray-700 px-2 py-1 rounded-full text-xs">
-                          {job.job_type}
-                        </span>
-                      )}
-
-                      {/* Skills */}
-                      {job.skills?.map((skill, idx) => (
-                        <span
-                          key={idx}
-                          className="bg-pink-200 text-gray-700 px-2 py-1 rounded-full text-xs"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-
-                      {/* Bookmark Tag */}
-                      {savedJobs.includes(job.id) && (
-                        <span className="bg-indigo-200 text-gray-500 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                          <SavedIcon className="h-4 w-4" />
-                        </span>
-                      )}
-                    </div>
+                {filteredJobs.length === 0 ? (
+                  <div className="text-center py-10 text-gray-500 bg-white rounded-xl shadow-sm">
+                    No jobs available
                   </div>
-                ))}
+                ) : (
+                  filteredJobs.map((job) => (
+                    <div
+                      key={job.id}
+                      onClick={() => handleJobClick(job)}
+                      className={`flex cursor-pointer flex-col gap-2 rounded-xl border p-4 transition-all duration-200 ${
+                        selectedJob?.id === job.id
+                          ? "border-blue-500 bg-white shadow-md"
+                          : "border-transparent bg-white hover:shadow-md"
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="h-16 w-16 rounded-full bg-cyan-200 flex items-center justify-center text-cyan-500 font-bold text-2xl">
+                          {job.company.name?.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-gray-900">
+                            {job.title}
+                          </h3>
+                          <p className="text-sm text-gray-600">
+                            {job.company.name}
+                          </p>
+                          <p className="mt-1 text-xs text-gray-400">
+                            {new Date(job.posted_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* --- Tags Section --- */}
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {/* Remote Status */}
+                        {job.remote_status && (
+                          <span className="px-2 py-1 rounded-full text-xs bg-lime-100 text-gray-700">
+                            {job.remote_status.toLowerCase() === "yes"
+                              ? "Remote"
+                              : "Onsite"}
+                          </span>
+                        )}
+
+                        {/* Job Type */}
+                        {job.job_type && (
+                          <span className="bg-orange-100 text-gray-700 px-2 py-1 rounded-full text-xs">
+                            {job.job_type}
+                          </span>
+                        )}
+
+                        {/* Skills */}
+                        {job.skills?.map((skill, idx) => (
+                          <span
+                            key={idx}
+                            className="bg-pink-200 text-gray-700 px-2 py-1 rounded-full text-xs"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+
+                        {/* Bookmark Tag */}
+                        {savedJobs.includes(job.id) && (
+                          <span className="bg-indigo-200 text-gray-500 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                            <SavedIcon className="h-4 w-4" />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </main>
 
-          {/* Job Details Pane (Desktop) */}
-          {/* Job + Company Details Pane */}
           <aside className="hidden lg:block lg:w-2/5 py-6 pl-4">
             {selectedJob && (
               <div className="sticky top-6">
@@ -604,124 +610,128 @@ export default function CareerConnect() {
       </div>
 
       {/* Apply Modal */}
-      <Modal isOpen={isApplyOpen} onClose={closeApply}>
-        <ApplyForm
-          jobId={selectedJob?.id}
-          onClose={closeApply}
-          onSuccess={onApplySuccess}
-          resumeUrl={resumeUrl} // ✅ auto-filled resume
-        />
-      </Modal>
-
-      <Modal isOpen={isCompanyModalOpen} onClose={closeCompanyModal}>
-        <div className="rounded-2xl bg-white p-6 shadow-sm space-y-6 max-w-lg mx-auto">
-          {/* Company Name */}
-          <h3 className="text-xl font-bold text-center">
-            {selectedJob.company.name}
-          </h3>
-
-          {/* Location */}
-          <DetailItem
-            icon={<LocationOnIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
-            label="Location"
-            value={selectedJob.company.location || "N/A"}
+      {isApplyOpen && selectedJob && (
+        <Modal isOpen={isApplyOpen} onClose={closeApply}>
+          <ApplyForm
+            jobId={selectedJob?.id}
+            onClose={closeApply}
+            onSuccess={onApplySuccess}
+            resumeUrl={resumeUrl} // ✅ auto-filled resume
           />
+        </Modal>
+      )}
 
-          {/* Website */}
-          {selectedJob.company.website && (
+      {isCompanyModalOpen && selectedJob?.company && (
+        <Modal isOpen={isCompanyModalOpen} onClose={closeCompanyModal}>
+          <div className="rounded-2xl bg-white p-6 shadow-sm space-y-6 max-w-lg mx-auto">
+            {/* Company Name */}
+            <h3 className="text-xl font-bold text-center">
+              {selectedJob.company.name}
+            </h3>
+
+            {/* Location */}
             <DetailItem
-              icon={<LanguageIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
-              label="Website"
-              value={
-                <a
-                  href={selectedJob.company.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  {selectedJob.company.website}
-                </a>
-              }
+              icon={<LocationOnIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+              label="Location"
+              value={selectedJob.company.location || "N/A"}
             />
-          )}
 
-          {/* Industry */}
-          {selectedJob.company.industry && (
-            <DetailItem
-              icon={<WorkIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
-              label="Industry"
-              value={selectedJob.company.industry}
-            />
-          )}
+            {/* Website */}
+            {selectedJob.company.website && (
+              <DetailItem
+                icon={<LanguageIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+                label="Website"
+                value={
+                  <a
+                    href={selectedJob.company.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    {selectedJob.company.website}
+                  </a>
+                }
+              />
+            )}
 
-          {/* Description */}
-          {selectedJob.company.description && (
+            {/* Industry */}
+            {selectedJob.company.industry && (
+              <DetailItem
+                icon={<WorkIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+                label="Industry"
+                value={selectedJob.company.industry}
+              />
+            )}
+
+            {/* Description */}
+            {selectedJob.company.description && (
+              <DetailItem
+                icon={
+                  <DescriptionIcon className="h-5 w-5 text-gray-500 mt-0.5" />
+                }
+                label="Description"
+                value={selectedJob.company.description}
+              />
+            )}
+
+            {/* Company Size */}
+            {selectedJob.company.company_size && (
+              <DetailItem
+                icon={<PeopleIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+                label="Company Size"
+                value={selectedJob.company.company_size}
+              />
+            )}
+
+            {/* Founded Date */}
             <DetailItem
               icon={
-                <DescriptionIcon className="h-5 w-5 text-gray-500 mt-0.5" />
+                <CalendarTodayIcon className="h-5 w-5 text-gray-500 mt-0.5" />
               }
-              label="Description"
-              value={selectedJob.company.description}
+              label="Founded"
+              value={
+                selectedJob.company.founded_date
+                  ? new Date(selectedJob.company.founded_date).getFullYear()
+                  : "N/A"
+              }
             />
-          )}
 
-          {/* Company Size */}
-          {selectedJob.company.company_size && (
+            {/* Email */}
             <DetailItem
-              icon={<PeopleIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
-              label="Company Size"
-              value={selectedJob.company.company_size}
+              icon={<EmailIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+              label="Email"
+              value={selectedJob.company.email || "N/A"}
             />
-          )}
 
-          {/* Founded Date */}
-          <DetailItem
-            icon={
-              <CalendarTodayIcon className="h-5 w-5 text-gray-500 mt-0.5" />
-            }
-            label="Founded"
-            value={
-              selectedJob.company.founded_date
-                ? new Date(selectedJob.company.founded_date).getFullYear()
-                : "N/A"
-            }
-          />
+            {/* Phone */}
+            <DetailItem
+              icon={<PhoneIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+              label="Phone"
+              value={selectedJob.company.phone_number || "N/A"}
+            />
 
-          {/* Email */}
-          <DetailItem
-            icon={<EmailIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
-            label="Email"
-            value={selectedJob.company.email || "N/A"}
-          />
-
-          {/* Phone */}
-          <DetailItem
-            icon={<PhoneIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
-            label="Phone"
-            value={selectedJob.company.phone_number || "N/A"}
-          />
-
-          {/* LinkedIn */}
-          <DetailItem
-            icon={<LinkedInIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
-            label="LinkedIn"
-            value={
-              selectedJob.company.linkedin ? (
-                <a
-                  href={selectedJob.company.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  {selectedJob.company.linkedin}
-                </a>
-              ) : (
-                "N/A"
-              )
-            }
-          />
-        </div>
-      </Modal>
+            {/* LinkedIn */}
+            <DetailItem
+              icon={<LinkedInIcon className="h-5 w-5 text-gray-500 mt-0.5" />}
+              label="LinkedIn"
+              value={
+                selectedJob.company.linkedin ? (
+                  <a
+                    href={selectedJob.company.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    {selectedJob.company.linkedin}
+                  </a>
+                ) : (
+                  "N/A"
+                )
+              }
+            />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
