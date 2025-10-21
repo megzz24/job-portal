@@ -16,7 +16,7 @@ def create_users(apps, schema_editor):
     ]
 
     for u in users:
-        User.objects.create(
+        User.objects.get_or_create(
             email=u["email"],
             first_name=u["first_name"],
             last_name=u["last_name"],
@@ -26,7 +26,7 @@ def create_users(apps, schema_editor):
         )
 
     # Create an admin user
-    User.objects.create(
+    User.objects.get_or_create(
         email="admin@gmail.com",
         first_name="Admin",
         last_name="User",
@@ -38,11 +38,11 @@ def create_users(apps, schema_editor):
 def remove_users(apps, schema_editor):
     User = apps.get_model("users", "User")
     User.objects.filter(email__in=[
-        "alice@gmail.com",
-        "bob@gmail.com",
-        "carol@gmail.com",
-        "dave@gmail.com",
-        "eve@gmail.com",
+        "roan@gmail.com",
+        "cleo@gmail.com",
+        "dora@gmail.com",
+        "dean@gmail.com",
+        "lea@gmail.com",
         "admin@gmail.com"
     ]).delete()
 
