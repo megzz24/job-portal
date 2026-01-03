@@ -5,7 +5,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.utils import timezone
-
+from backend.storage import RawCloudinaryStorage
 
 # Custom User Manager
 class UserManager(BaseUserManager):
@@ -60,7 +60,12 @@ class JobSeeker(models.Model):
     profile_picture = models.ImageField(
         upload_to="profile_pics/", blank=True, null=True
     )
-    resume = models.FileField(upload_to="resumes/", blank=True, null=True)
+    resume = models.FileField(
+        upload_to="resumes/",
+        storage=RawCloudinaryStorage(),
+        blank=True,
+        null=True
+    )
     skills = models.ManyToManyField(
         "jobs.Skill", blank=True, related_name="jobseekers"
     )  # Link to skills
