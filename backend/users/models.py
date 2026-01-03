@@ -5,7 +5,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.utils import timezone
-from backend.backend.storage import RawCloudinaryStorage
+from backend.storage import RawCloudinaryStorage
 
 # Custom User Manager
 class UserManager(BaseUserManager):
