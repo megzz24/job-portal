@@ -7,7 +7,6 @@ from django.db.models import Count
 from rest_framework import status, generics, permissions
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
 from django.db.models import Case, When, Value, IntegerField, Q
 
 
@@ -276,6 +275,7 @@ def close_job(request, job_id):
 
     return Response({"detail": f"Job '{job.title}' closed successfully"})
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def reopen_job(request, job_id):
@@ -473,6 +473,7 @@ def dashboard_summary(request):
             "total_hires": total_hires,
         }
     )
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
