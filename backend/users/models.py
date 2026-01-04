@@ -5,7 +5,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.utils import timezone
-from cloudinary_storage.storage import RawMediaCloudinaryStorage
+from backend.storage import RawCloudinaryStorage
 
 # Custom User Manager
 class UserManager(BaseUserManager):
@@ -62,7 +62,7 @@ class JobSeeker(models.Model):
     )
     resume = models.FileField(
         upload_to="resumes/",
-        storage=RawMediaCloudinaryStorage(),
+        storage=RawCloudinaryStorage(),
         blank=True,
         null=True
     )
